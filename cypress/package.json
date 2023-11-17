@@ -1,0 +1,14 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/cypress-io/cypress-example-todomvc.git",
+  "author": "Cody Adam <cody.ad4@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "cypress open"
+  },
+  "devDependencies": {
+    "cypress": "^13.5.0"
+  }
+}
