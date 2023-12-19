@@ -9,6 +9,7 @@
     "test": "cypress open"
   },
   "devDependencies": {
-    "cypress": "^13.5.0"
+    "cypress": "^13.5.0",
+    "typescript": "^5.3.3"
   }
 }
