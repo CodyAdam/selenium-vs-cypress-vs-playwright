@@ -2,7 +2,7 @@ import {Builder, WebDriver} from "selenium-webdriver";
 import TodoPage from "../../pages/TodoPage";
 import {expect} from "chai";
 
-describe("TodoMVC", function () {
+describe("TodoMVC Page Object Model", function () {
   let driver: WebDriver;
   let todoPage: TodoPage;
 

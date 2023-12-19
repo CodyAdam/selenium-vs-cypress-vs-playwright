@@ -6,7 +6,7 @@ const URL = 'https://todomvc.com/examples/vanillajs/';
 /**
  * Class representing a Todo page.
  */
-export default class TodoPage {
+export default class TodoPageFluent {
     /**
      * Create a Todo page.
      * @param {WebDriver} driver - The Selenium WebDriver object.
@@ -18,6 +18,7 @@ export default class TodoPage {
      */
     async visit() {
         await this.driver.get(URL);
+        return this;
     }
 
     /**
@@ -26,6 +27,7 @@ export default class TodoPage {
      */
     async fillNewTodo (todoText: string) {
         await this.driver.findElement(By.css('.new-todo')).sendKeys(todoText);
+        return this;
     }
 
     /**
@@ -33,6 +35,7 @@ export default class TodoPage {
      */
     async submit() {
         await this.driver.findElement(By.css('.new-todo')).sendKeys('\n');
+        return this;
     }
 
     /**
@@ -42,6 +45,7 @@ export default class TodoPage {
     async checkTodo (todoText: string) {
         const todoElement = await this.getTodoElement(todoText);
         await todoElement.findElement(By.css('.toggle')).click();
+        return this;
     }
 
     /**
@@ -53,6 +57,7 @@ export default class TodoPage {
         if (await todoElement.findElement(By.css('.toggle')).isSelected()) {
             await todoElement.findElement(By.css('.toggle')).click();
         }
+        return this;
     }
 
     /**
@@ -60,6 +65,7 @@ export default class TodoPage {
      */
     async clearCompleted() {
         await this.driver.findElement(By.css('.clear-completed')).click();
+        return this;
     }
 
     /**
@@ -70,6 +76,7 @@ export default class TodoPage {
         const todoElement = await this.getTodoElement(todoText);
         await this.driver.actions().move({origin: todoElement}).perform();
         await todoElement.findElement(By.css('.destroy')).click();
+        return this;
     }
 
     /**

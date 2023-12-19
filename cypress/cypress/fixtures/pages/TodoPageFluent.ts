@@ -1,3 +1,8 @@
+/*
+    Pros:
+    - cy is a global object, so it's always available
+    - no async/await needed, easy to chain commands
+ */
 const URL = 'https://todomvc.com/examples/vanillajs/';
 
 export default class TodoPage {

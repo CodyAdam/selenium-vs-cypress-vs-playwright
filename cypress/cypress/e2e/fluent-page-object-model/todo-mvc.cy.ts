@@ -1,5 +1,5 @@
 import TodoPageFluent from '../../fixtures/pages/TodoPageFluent';
-describe('TodoMVC', () => {
+describe('TodoMVC Fluent Page Object Model', () => {
     it('should add new todo', () => {
         new TodoPageFluent()
           .visit()

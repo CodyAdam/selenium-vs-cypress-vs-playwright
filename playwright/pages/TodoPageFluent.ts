@@ -1,7 +1,7 @@
 /*
- Cons:
- - We need to pass the `page` object to the `TodoPage` constructor.
-*/
+    Cons:
+    - Because there are promises in the methods, it is harder to implement the fluent pattern (chaining methods).
+ */
 
 import { Page } from 'playwright';
 import {Locator} from "@playwright/test";
@@ -12,7 +12,7 @@ const URL = 'https://todomvc.com/examples/vanillajs/';
 /**
  * Class representing a Todo page.
  */
-export default class TodoPage {
+export default class TodoPageFluent {
     /**
      * Create a Todo page.
      * @param {Page} page - The Playwright page object.
@@ -22,60 +22,67 @@ export default class TodoPage {
     /**
      * Visit the Todo page.
      */
-    async visit() {
+    async visit(): Promise<this> {
         await this.page.goto(URL);
+        return this;
     }
 
     /**
      * Fill the new todo input field.
      * @param {string} todoText - The text of the todo.
      */
-    async fillNewTodo (todoText: string) {
+    async fillNewTodo (todoText: string): Promise<this> {
         await this.page.fill('.new-todo', todoText);
+        return this;
     }
 
     /**
      * Submit the new todo form.
      */
-    async submit() {
+    async submit(): Promise<this> {
         await this.page.press('.new-todo', 'Enter');
+        return this;
     }
 
     /**
      * Check a todo item.
      * @param {string} todoText - The text of the todo.
      */
-    async checkTodo (todoText: string) {
+    async checkTodo (todoText: string): Promise<this> {
         const todoElement = this.getTodoElement(todoText);
         const checkbox = todoElement.locator('.toggle');
         await checkbox.check()
+        return this;
     }
 
     /**
      * Uncheck a todo item.
      * @param {string} todoText - The text of the todo.
      */
-    async uncheckTodo (todoText: string) {
+    async uncheckTodo (todoText: string): Promise<this> {
         const todoElement = this.getTodoElement(todoText);
         const checkbox = todoElement.locator('.toggle');
         await checkbox.uncheck()
+        return this;
     }
 
     /**
      * Clear all completed todos.
      */
-    async clearCompleted() {
+    async clearCompleted(): Promise<this> {
         await this.page.click('.clear-completed');
+        return this;
     }
 
     /**
      * Delete a todo item.
      * @param {string} todoText - The text of the todo.
      */
-    async deleteTodo (todoText: string) {
+    async deleteTodo (todoText: string): Promise<this> {
         const todoElement = this.getTodoElement(todoText);
         const deleteButton = todoElement.locator('.destroy').first();
         await deleteButton.dispatchEvent('click');
+        return this;
     }
 
     /**

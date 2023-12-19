@@ -1,5 +1,5 @@
 import TodoPage from '../../fixtures/pages/TodoPage';
-describe('TodoMVC', () => {
+describe('TodoMVC Page Object Model', () => {
     it('should add new todo', () => {
         const page = new TodoPage();
         page.visit();

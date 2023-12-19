@@ -1,3 +1,7 @@
+/*
+    Pros:
+    - cy is a global object, so it's always available
+ */
 const URL = 'https://todomvc.com/examples/vanillajs/';
 
 export default class TodoPage {
