@@ -2,8 +2,7 @@ import TodoPageFluent from '../../pages/TodoPageFluent';
 import { test, expect } from '@playwright/test';
 
 test('should add new todo', async ({ page }) => {
-    const todoPage = new TodoPageFluent(page);
-    todoPage
+    await new TodoPageFluent(page)
       .visit()
       .then((todoPage) =>  todoPage.fillNewTodo('new todo') )
       .then((todoPage) =>  todoPage.submit() )
@@ -12,7 +11,7 @@ test('should add new todo', async ({ page }) => {
 });
 
 test('should check todo', async ({ page }) => {
-    new TodoPageFluent(page)
+    await new TodoPageFluent(page)
     .visit()
     .then((todoPage) =>  todoPage.fillNewTodo ('new todo') )
     .then((todoPage) =>  todoPage.submit() )
@@ -22,7 +21,7 @@ test('should check todo', async ({ page }) => {
 });
 
 test('should uncheck todo', async ({ page }) => {
-    new TodoPageFluent(page)
+    await new TodoPageFluent(page)
     .visit()
     .then((todoPage) =>  todoPage.fillNewTodo ('new todo') )
     .then((todoPage) =>  todoPage.submit() )
@@ -33,7 +32,7 @@ test('should uncheck todo', async ({ page }) => {
 });
 
 test('should clear completed', async ({ page }) => {
-    new TodoPageFluent(page)
+    await new TodoPageFluent(page)
     .visit()
     .then((todoPage) =>  todoPage.fillNewTodo ('new todo') )
     .then((todoPage) =>  todoPage.submit() )
@@ -44,7 +43,7 @@ test('should clear completed', async ({ page }) => {
 });
 
 test('should delete todo', async ({ page }) => {
-    new TodoPageFluent(page)
+    await new TodoPageFluent(page)
     .visit()
     .then((todoPage) =>  todoPage.fillNewTodo ('new todo') )
     .then((todoPage) =>  todoPage.submit() )
