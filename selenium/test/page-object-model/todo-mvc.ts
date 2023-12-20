@@ -1,13 +1,14 @@
 import {Builder, WebDriver} from "selenium-webdriver";
 import TodoPage from "../../pages/TodoPage";
 import {expect} from "chai";
+import {BrowserFactory} from "../../lib/browser-factory";
 
 describe("TodoMVC Page Object Model", function () {
   let driver: WebDriver;
   let todoPage: TodoPage;
 
   before(async () => {
-    driver = await new Builder().forBrowser("chrome").build();
+    driver = await BrowserFactory.createBrowser("chrome")
     todoPage = new TodoPage(driver);
   });
 
