@@ -10,6 +10,7 @@
   },
   "scripts": {
     "test": "playwright test",
+    "debug": "playwright test --debug",
     "report": "playwright show-report"
   }
 }

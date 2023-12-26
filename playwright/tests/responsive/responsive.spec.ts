@@ -1,5 +1,4 @@
-import { test, expect } from '@playwright/test';
-import {devices} from "playwright";
+import { test, expect, devices } from '@playwright/test';
 
 const iPhone = devices['iPhone 11'];
 test('should have the correct viewport size', async ({ browser }) => {
