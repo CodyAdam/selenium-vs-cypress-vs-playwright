@@ -1,0 +1,103 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Test reports quality
+selenium: 3
+cypress: 5
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+# Définition
+
+La qualité des rapports en test automatisé fait référence à la clarté, au niveau de détail et à
+l'utilité des résultats générés par un outil de test après l'exécution des tests.
+
+# Critères d'Évaluation
+- Clarté des rapports
+- Niveau de détail fourni
+- Intégration avec d'autres outils
+- Capacités de retour d'information en temps réel
+- Facilité d'analyse des résultats
+
+# Cypress ([Documentation](https://docs.cypress.io/guides/tooling/reporters))
+
+<ThumbUpAlert>
+    Cypress fournit des rapports clairs et détaillés. Il inclut des captures d'écran et des vidéos pour faciliter le débogage.
+</ThumbUpAlert>
+
+Le tableau de bord de Cypress est convivial et affiche les résultats des tests dans un format lisible.
+Il s'intègre bien avec les outils CI et fournit des mises à jour en temps réel du statut des tests.
+
+![Cypress reports](/cypress-report.png)
+
+En plus de ça, parce que Cypress est construit au dessus de **Mocha**, il est possible d'utiliser n'importe quel reporter de Mocha.
+
+La liste est disponible [ici](https://mochajs.org/#reporters) et inclut notamment :
+
+## DOC
+
+![Mocha Doc reporter](https://mochajs.org/static/reporter-doc.resize920,9999-withoutEnlargement.f56aab77df.png)
+
+## Spec
+
+![Mocha Spec reporter](https://mochajs.org/static/reporter-spec.resize920,9999-withoutEnlargement.736b9ec065.png)
+
+
+# Playwright ([Documentation](https://playwright.dev/docs/test-reporters))
+
+<ThumbUpAlert>
+    Playwright offre la possibilité de choisir quel(s) *reporter(s)* utiliser,
+    parmi une liste très fournie (en sachant qu'il est possible de définir un nouveau reporter). Cela rend les rapports très flexibles.
+</ThumbUpAlert>
+
+Pour ce faire, il suffit de passer le(s) reporter(s) en paramètre de la commande `test` :
+
+```bash
+npx playwright test --reporter=list
+```
+
+Parmis les reporters disponibles, on retrouve notamment :
+
+## List
+
+```text
+npx playwright test --reporter=list
+Running 124 tests using 6 workers
+
+ 1  ✓ should access error in env (438ms)
+ 2  ✓ handle long test names (515ms)
+ 3  x 1) render expected (691ms)
+ 4  ✓ should timeout (932ms)
+ 5    should repeat each:
+ 6  ✓ should respect enclosing .gitignore (569ms)
+ 7    should teardown env after timeout:
+ 8    should respect excluded tests:
+ 9  ✓ should handle env beforeEach error (638ms)
+10    should respect enclosing .gitignore:
+```
+
+## HTML
+
+![Playwright HTML reporter](/playwright-report.png)
+
+
+<ThumbDownAlert>
+    Néanmoins, on regrette que le rapport HTML de playwright ne soit pas aussi intuitif que celui de Cypress.
+    On ne peut par exemple pas voir des captures d'écran pour chaque étape du test.
+</ThumbDownAlert>
+
+# Selenium
+
+<ThumbDownAlert>
+    Selenium fournit des fonctionnalités de rapport de base, nécessitant des outils tiers pour des rapports plus détaillés.
+</ThumbDownAlert>
+
+Les rapports de Selenium ne sont pas aussi avancés que ceux de Cypress ou Playwright.
+Ils offrent des informations basiques de réussite/échec, et un rapport détaillé nécessite l'intégration avec des outils comme TestNG ou Allure.
+
+<ThumbUpAlert>
+    La flexibilité avec les outils tiers permet une personnalisation des rapports, mais cela ajoute à la complexité de la configuration.
+</ThumbUpAlert>

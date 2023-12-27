@@ -1,0 +1,46 @@
+---
+import getColor from "../lib/getColor";
+const criterias = await Astro.glob('./criterias/*.mdx');
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Comparaison between Selenium, Cypress and Playwright</title>
+	</head>
+	<body class="bg-slate-200 space-y-12 max-w-4xl mx-auto py-12">
+		<h1 class="text-4xl font-bold">Comparaison between Selenium, Cypress and Playwright</h1>
+
+		<div class="bg-slate-50 rounded-lg overflow-hidden shadow-md">
+			<table class="table-auto w-full">
+				<thead class="bg-gray-300">
+				<tr>
+					<th class="p-4 font-normal">Name</th>
+					<th class="p-4 font-normal">Selenium</th>
+					<th class="p-4 font-normal">Playwright</th>
+					<th class="p-4 font-normal">Cypress</th>
+				</tr>
+				</thead>
+				<tbody>
+				{criterias.map(criteria => (
+					<tr>
+						<td class="border p-4 flex items-center gap-2">
+							<a href={criteria.url}>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-6 fill-gray-500 hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M232.49 215.51L185 168a92.12 92.12 0 1 0-17 17l47.53 47.54a12 12 0 0 0 17-17ZM44 112a68 68 0 1 1 68 68a68.07 68.07 0 0 1-68-68"/></svg>
+							</a>
+							{criteria.frontmatter.title}
+						</td>
+						<td class="border p-4 w-2 text-center font-bold" style={{ backgroundColor: getColor(criteria.frontmatter.selenium) }}>{criteria.frontmatter.selenium}</td>
+						<td class="border p-4 w-2 text-center font-bold" style={{ backgroundColor: getColor(criteria.frontmatter.playwright) }}>{criteria.frontmatter.playwright}</td>
+						<td class="border p-4 w-2 text-center font-bold" style={{ backgroundColor: getColor(criteria.frontmatter.cypress) }}>{criteria.frontmatter.cypress}</td>
+					</tr>
+				))}
+				</tbody>
+			</table>
+		</div>
+
+	</body>
+</html>

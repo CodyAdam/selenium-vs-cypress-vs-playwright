@@ -1,0 +1,109 @@
+---
+layout: ../../layouts/Criteria.astro
+title: i18n / Localization
+selenium: 2
+cypress: 3
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+
+# Définition
+
+# Scénario de test
+
+# [What is my Timezone](https://webbrowsertools.com/timezone/)
+- [ ] Vérifier que la langue du navigateur est bien celle attendue
+- [ ] Vérifier que la timezone du navigateur est bien celle attendue
+
+# Cypress
+
+Que ce soit pour la langue du navigateur ou pour la timezone,
+il n'est pas simple de modifier ces paramètres simplement dans Cypress.
+
+<ThumbDownAlert>
+    Il y a deux issues (<a href="https://github.com/cypress-io/cypress/issues/1043">1043</a> et <a href="https://github.com/cypress-io/cypress/issues/7890">7890</a>) datant de 2017 et 2020 qui traitent de ce sujet.
+    Les développeurs n'ont pas l'air de les privilégier.
+</ThumbDownAlert>
+
+Cependant, il existe des workarounds qui fonctionnent (au moins sur Chrome et Electron).
+
+## Timezone
+
+On peut régler la variable d'environnement `TZ` pour modifier la timezone du navigateur.
+Pour ce faire, on peut ajouter `TZ=<timezone>` avant la commande `cypress run`. Par exemple :
+
+```bash
+TZ=Antarctica/Troll cypress run
+```
+
+## Langue
+
+Pour la langue, on utilise le Chrome DevTools Protocol (CDP).
+Pour ce faire, on ajoute un peu de code au fichier `cypress/support/e2e.js` :
+
+```js
+Cypress.on('test:before:run', () => {
+    Cypress.automation('remote:debugger:protocol', {
+        command: 'Emulation.setLocaleOverride',
+        params: {
+            locale: '<locale>'
+        }
+    });
+});
+```
+
+En remplaçant `<locale>` par la locale souhaitée (par exemple `fr-FR`).
+
+
+
+# Selenium
+
+Même chose que pour Cypress, pas de solution simple pour modifier la timezone ou la langue du navigateur.
+
+## Timezone
+
+On peut régler la variable d'environnement `TZ` pour modifier la timezone du navigateur.
+Pour ce faire, on peut ajouter `TZ=<timezone>` avant la commande `mocha --timeout 10000 --require ts-node/register test/**/*.ts`. Par exemple :
+
+```bash
+TZ=Antarctica/Troll mocha --timeout 10000 --require ts-node/register test/**/*.ts
+```
+
+## Langue
+
+En parcourant les solutions proposées sur StackOverflow, on en retrouve quelque chose qui revient souvent :
+```ts
+import {Options} from "selenium-webdriver/chrome";
+
+let options = new Options();
+options.addArguments('--lang=fr');
+
+ let driver = await new Builder()
+  .forBrowser('chrome')
+  .setChromeOptions(options)
+  .build();
+
+```
+
+Cependant, nous n'avons pas réussi à faire fonctionner cette solution.
+
+# Playwright
+
+<ThumbUpAlert>
+    Playwright permet de modifier la langue et la timezone du navigateur, très facilement, et pour tous les navigateurs.
+</ThumbUpAlert>
+
+Pour ce faire, il suffit de créer un nouveau contexte avec les options `locale` et `timezoneId` :
+
+```ts
+test('<...>', async ({ browser }) => {
+    const context = await browser.newContext({
+        timezoneId: 'Antarctica/Troll',
+        locale: 'fr-FR'
+    });
+    const page = await context.newPage();
+    // ...
+});
+```

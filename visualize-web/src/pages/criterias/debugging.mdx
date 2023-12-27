@@ -1,0 +1,62 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Debugging
+selenium: 3
+cypress: 5
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+# Définition
+
+Les capacités de débogage se réfèrent à la facilité avec laquelle un développeur peut identifier et résoudre les problèmes dans les tests automatisés.
+
+# Cypress ([Documentation](https://docs.cypress.io/guides/guides/debugging))
+
+<ThumbUpAlert>
+    Cypress offre une expérience de débogage supérieure avec des fonctionnalités telles que Time Travel et Real-time Reloads.
+</ThumbUpAlert>
+
+Cypress permet de voir l'état de l'application à chaque étape du test, facilitant ainsi l'identification des problèmes.
+La console de débogage est très intuitive, permet d'avoir une capture d'écran à chaque étape et de voir un avant et après de chaque action.
+
+![Cypress Debugging](/cypress-debug.png)
+
+Cypress offre également une excellente intégration avec les outils de développement de Chrome pour un débogage plus approfondi.
+
+# Playwright ([Documentation](https://playwright.dev/docs/debug))
+
+Playwright recommande d'utiliser leur extension VSCode pour le débogage. Avec elle, il est possible de mettre des points d'arrêt dans le code et de voir l'état de l'application à chaque étape du test.
+
+Il est aussi possible de passer par **Playwright Inspector**, un outil GUI qui permet de déboguer les tests Playwright.
+
+![Playwright Debugging](/playwright-debug.png)
+
+Pour ce faire, il faut lancer le test avec l'option `--debug` (par exemple `npx playwright test --debug`).
+
+Avec cette dernière, il est possible de voir l'état de l'application à chaque étape du test, mettre des points d'arrêt dans le code, voir les logs et modifier
+les sélecteurs CSS en temps réel.
+
+<ThumbUpAlert>
+    Bien que moins satisfaisante que celle de Cypress, l'expérience de débogage de Playwright est très bonne et offre des fonctionnalités similaires.
+</ThumbUpAlert>
+
+<ThumbUpAlert>
+    Point positif, Playwright offre plusieurs options de débogage, notamment une extension VSCode et un outil GUI.
+</ThumbUpAlert>
+
+# Selenium
+
+<ThumbDownAlert>
+    Selenium offre des outils de débogage de base, mais ils sont moins avancés et intuitifs comparés à Cypress et Playwright.
+</ThumbDownAlert>
+
+Selenium fournit des logs détaillés et permet l'utilisation de points d'arrêt dans le code.
+Il est aussi possible de faire des captures d'écran avec la méthode `driver.takeScreenshot()`.
+
+<ThumbDownAlert>
+    Selenium n'offre pas de documentation sur les outils de débogage.
+</ThumbDownAlert>

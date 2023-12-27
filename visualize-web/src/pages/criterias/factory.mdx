@@ -1,0 +1,88 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Factory
+selenium: 5
+cypress: NA
+playwright: NA
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+
+# Définition
+
+La Factory est un design pattern qui permet de créer des objets sans avoir à spécifier leur classe. Il permet de créer des objets de manière dynamique, en fonction de la situation.
+
+# Scénario de test
+## TodoMVC:
+- Changement de browser (Chrome et Firefox)
+
+# Selenium
+
+Selenium permet de configurer le driver à la volée, et notamment le browser. On peut donc déclarer une classe `BrowserFactory` qui permet de créer un driver en fonction du browser souhaité.
+
+```ts
+import {Builder, WebDriver} from "selenium-webdriver";
+
+
+export type BrowserName = "chrome" | "firefox";
+
+abstract class Browser {
+  abstract createDriver(): Promise<WebDriver>
+}
+
+export class Chrome extends Browser {
+  async createDriver(): Promise<WebDriver> {
+    return new Builder().forBrowser("chrome").build();
+  }
+}
+
+
+export class Firefox extends Browser {
+  async createDriver(): Promise<WebDriver> {
+    return new Builder().forBrowser("firefox").build();
+  }
+}
+
+export class BrowserFactory {
+  static async createBrowser(browserName: BrowserName): Promise<WebDriver> {
+    switch (browserName) {
+      case "chrome":
+        return new Chrome().createDriver();
+      case "firefox":
+        return new Firefox().createDriver();
+      default:
+        throw new Error(`Browser ${browserName} is not supported`);
+    }
+  }
+}
+```
+
+On peut ensuite utiliser cette factory dans nos tests :
+
+```ts
+let driver: WebDriver;
+
+before(async () => {
+  driver = await BrowserFactory.createBrowser("chrome")
+});
+```
+
+# Cypress et Playwright
+
+<ThumbDownAlert>
+    Cypress et Playwright ne permettent pas de changer de browser à la volée. Il faut donc lancer les tests avec le browser souhaité.
+</ThumbDownAlert>
+
+## Cypress
+
+Pour lancer les tests avec un browser spécifique, il faut utiliser la commande `cypress run --browser <browser>`.
+Par exemple, pour lancer les tests avec Chrome, il faut utiliser la commande `cypress run --browser chrome`.
+
+## Playwright
+
+<ThumbUpAlert>
+    Par défaut, Playwright lance les tests en utilisant tous les browsers.
+</ThumbUpAlert>
+
+

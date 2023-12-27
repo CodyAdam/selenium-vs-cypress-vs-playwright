@@ -1,0 +1,123 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Fluent Page Object Model
+selenium: 3
+cypress: 5
+playwright: 2
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+# Définition
+
+Le Fluent Page Object Model est une variante du Page Object Model qui utilise le chainage de méthodes pour rendre le code plus lisible.
+
+# Scénario de test
+## TodoMVC:
+- add new todo
+- check todo
+- uncheck todo
+- clear completed todos
+- delete todo
+
+# Cypress
+
+<ThumbUpAlert>
+    Cypress utilise une API synchrone, le chainage de méthodes est donc naturellement possible.
+</ThumbUpAlert>
+
+Afin de convertir notre Page Object Model en Fluent Page Object Model, il suffit de remplacer les méthodes de notre Page Object Model par des méthodes qui retournent `this`.
+
+```ts
+export default class TodoPage {
+    visit(): TodoPage {
+        cy.visit(URL);
+        return this;
+    }
+    fillNewTodo (todoText: string): TodoPage {
+        cy.get('.new-todo').type(todoText);
+        return this;
+    }
+}
+```
+
+Parce que chaque méthode retourne `this`, il est possible de les chainer.
+
+```ts
+it('should add new todo', () => {
+    new TodoPageFluent()
+      .visit()
+      .fillNewTodo ('new todo')
+});
+```
+
+# Playwright
+
+<ThumbDownAlert>
+    Playwright utilise une API asynchrone, le chainage de méthodes n'est donc pas aussi naturel qu'avec Cypress puisque les méthodes retournent une promesse.
+</ThumbDownAlert>
+
+```ts
+export default class TodoPageFluent {
+    constructor(private page: Page) {}
+    async visit(): Promise<this> {
+        await this.page.goto(URL);
+        return this;
+    }
+    async fillNewTodo (todoText: string): Promise<this> {
+        await this.page.fill('.new-todo', todoText);
+        return this;
+    }
+}
+```
+Ainsi, il est nécessaire d'utiliser `then` pour chainer les méthodes.
+
+```ts
+test('should add new todo', async ({ page }) => {
+    await new TodoPageFluent(page)
+      .visit()
+      .then((todoPage) =>  todoPage.fillNewTodo('new todo') )
+});
+```
+
+<ThumbWarningAlert>
+    Il faut faire attention à ne pas oublier le `await` avant l'appel des méthodes.
+    Sinon, l'objet `page` sera détruit avant que les méthodes ne soient appelées.
+</ThumbWarningAlert>
+
+
+# Selenium
+
+<ThumbDownAlert>
+    Selenium utilise une API asynchrone, le chainage de méthodes n'est donc pas aussi naturel qu'avec Cypress puisque les méthodes retournent une promesse.
+</ThumbDownAlert>
+
+```ts
+export default class TodoPageFluent {
+    constructor(private driver: WebDriver) {}
+    async visit() {
+        await this.driver.get(URL);
+        return this;
+    }
+    async fillNewTodo (todoText: string) {
+        await this.driver.findElement(By.css('.new-todo')).sendKeys(todoText);
+        return this;
+    }
+}
+```
+
+Ainsi, il est nécessaire d'utiliser `then` pour chainer les méthodes.
+
+```ts
+it("should add new todo", async () => {
+    todoPage
+      .visit()
+      .then((todoPage) =>  todoPage.fillNewTodo ('new todo') )
+});
+```
+
+<ThumbUpAlert>
+    Contraiement à Playwright, il n'est pas nécessaire d'utiliser `await` avant l'appel des méthodes puisque le driver n'est pas détruit.
+</ThumbUpAlert>

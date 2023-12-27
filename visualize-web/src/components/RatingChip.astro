@@ -1,0 +1,6 @@
+---
+import getColor from "../lib/getColor";
+const { rating } = Astro.props;
+---
+
+<span style={{ backgroundColor: getColor(rating) }} class="py-1 px-2 rounded-full"><slot></slot> <span class="font-bold">{rating}</span></span>

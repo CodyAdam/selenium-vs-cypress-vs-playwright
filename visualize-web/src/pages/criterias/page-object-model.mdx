@@ -1,0 +1,131 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Page Object Model
+selenium: 4
+cypress: 5
+playwright: 3
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+
+# Définition
+
+Le Page Object Model est un pattern qui permet de représenter une page web en tant qu'objet. Il permet de séparer la logique de test de la logique de navigation.
+
+
+# Scénario de test
+## TodoMVC:
+- add new todo
+- check todo
+- uncheck todo
+- clear completed todos
+- delete todo
+
+# Cypress
+
+L'objet `cy` est un objet global qui permet d'interagir avec le navigateur. De ce fait, la classe qui représente la page n'a pas de lien externe.
+
+```ts
+export default class TodoPage {
+    visit() {
+        cy.visit(URL);
+    }
+
+    fillNewTodo(todoText: string) {
+        cy.get('.new-todo').type(todoText);
+    }
+}
+```
+
+<ThumbUpAlert>
+    L'API est très simple à utiliser et permet de faire des tests très lisibles.
+</ThumbUpAlert>
+
+Il est ainsi très simple d'instancier une page et d'interagir avec.
+
+```ts
+it('should add new todo', () => {
+    const page = new TodoPage();
+    page.visit();
+    page.fillNewTodo('new todo');
+});
+```
+# Selenium
+
+<ThumbDownAlert>
+    Nécessité de passer l'objet `driver` dans le constructeur de la classe qui représente la page.
+</ThumbDownAlert>
+
+```ts
+export default class TodoPage {
+
+    constructor(private driver: WebDriver) {}
+
+    async visit() {
+        await this.driver.get(URL);
+    }
+
+    async fillNewTodo (todoText: string) {
+        await this.driver.findElement(By.css('.new-todo')).sendKeys(todoText);
+    }
+}
+```
+<ThumbDownAlert>
+    L'API est plus verbeuse et moins lisible que celle de Cypress.
+</ThumbDownAlert>
+
+Cependant, `driver` est créé une seule fois pour tous les tests. Il est donc possible de faire de même avec la classe qui représente la page.
+
+```ts
+let driver: WebDriver;
+let todoPage: TodoPage;
+
+before(async () => {
+    driver = // ...
+    todoPage = new TodoPage(driver);
+});
+
+// ...
+
+it("should add new todo", async () => {
+    await todoPage.visit();
+    await todoPage.fillNewTodo ('new todo');
+});
+```
+
+# Playwright
+
+<ThumbDownAlert>
+    Comme pour Selenium, nécessité de passer l'objet `page` dans le constructeur de la classe qui représente la page.
+</ThumbDownAlert>
+
+```ts
+export default class TodoPage {
+    constructor(private page: Page) {}
+
+    async visit() {
+        await this.page.goto(URL);
+    }
+
+    async fillNewTodo (todoText: string) {
+        await this.page.fill('.new-todo', todoText);
+    }
+}
+```
+
+<ThumbUpAlert>
+    L'API est agréable à utiliser et permet de faire des tests lisibles (en restant légèrement moins satisfaisante que Cypress).
+</ThumbUpAlert>
+
+```ts
+test('should add new todo', async ({ page }) => {
+    const todoPage = new TodoPage(page);
+    await todoPage.visit();
+    await todoPage.fillNewTodo ('new todo');
+});
+```
+
+<ThumbDownAlert>
+    Parce que l'objet `page` est un paramètre de chaque test, il est nécessaire de créer une nouvelle instance de la classe qui représente la page pour chaque test.
+</ThumbDownAlert>

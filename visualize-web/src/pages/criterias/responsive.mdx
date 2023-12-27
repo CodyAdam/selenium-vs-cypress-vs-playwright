@@ -1,0 +1,109 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Responsive Rendering
+selenium: 2
+cypress: 4
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+# Définition
+
+La gestion du "responsive rendering" consiste à tester les applications web sur différentes tailles d'écran, différents appareils et différentes résolutions afin de garantir une expérience utilisateur cohérente.
+
+# Scénario de test
+- [x] Charger [whatismyviewport.com](https://whatismyviewport.com) en utilisant une taille d'écran spécifique et vérifier la taille d'écran rapportée.
+
+# Cypress
+
+<ThumbUpAlert>
+    Cypress propose des options de configuration de la fenêtre d'affichage pour tester facilement différentes tailles d'écran.
+</ThumbUpAlert>
+
+Cypress permet de modifier la taille de l'écran dans les tests, ce qui facilite la vérification du rendu sur différentes tailles d'écran.
+
+```ts
+it('should have the correct viewport', () => {
+    cy.viewport(210, 220)
+    // ...
+})
+```
+
+<ThumbDownAlert>
+    Cypress fonctionne à l'intérieur du navigateur et peut ne pas émuler complètement les comportements spécifiques à l'appareil.
+</ThumbDownAlert>
+
+# Playwright
+
+<ThumbUpAlert>
+    Playwright offre des capacités avancées d'émulation des appareils, notamment des tailles de fenêtre et des user agents spécifiques à l'appareil.
+</ThumbUpAlert>
+
+Playwright peut émuler des appareils à partir d'une liste prédéfinie ou de configurations personnalisées.
+
+```ts
+import { test, expect } from '@playwright/test';
+import {devices} from "playwright";
+
+const iPhone = devices['iPhone 11'];
+
+test('should have the correct viewport size', async ({ browser }) => {
+    const context = await browser.newContext({
+        ...iPhone
+    });
+    const page = await context.newPage();
+    // ...
+});
+```
+
+# Selenium
+
+<ThumbDownAlert>
+    Selenium permet d'ajuster la taille des fenêtres, mais ne permet pas de définir le viewport (il faut tenir compte de la barre de menu),
+    et ne dispose pas de fonctions avancées d'émulation de périphériques.
+</ThumbDownAlert>
+
+Selenium peut modifier la taille de la fenêtre, mais il n'offre pas une émulation de périphérique aussi complète que Playwright.
+
+```ts
+before(async () => {
+    let driver = await new Builder()
+      .forBrowser('chrome')
+      .build();
+
+    // Set the viewport size
+    await driver.manage().window().setRect({ width: desiredWidth, height: desiredHeight });
+});
+
+after(async () => driver.quit());
+```
+
+Cependant, pour définir la taille de la fenêtre, vous devez prendre en compte la barre de menu et calculer la taille de la fenêtre en conséquence.
+
+```ts
+async function setViewportSize(driver: WebDriver, desiredWidth: number, desiredHeight: number) {
+  // Set an initial window size
+  await driver.manage().window().setRect({ width: desiredWidth, height: desiredHeight });
+
+  // Fetch the actual viewport size
+  const actualViewportSize = await driver.executeScript<{ width: number, height: number }>(() => {
+    return {
+      width: window.innerWidth,
+      height: window.innerHeight
+    };
+  });
+
+  // Calculate the difference
+  const widthDifference = desiredWidth - actualViewportSize.width;
+  const heightDifference = desiredHeight - actualViewportSize.height;
+
+  // Set the corrected window size
+  await driver.manage().window().setRect({
+    width: desiredWidth + widthDifference,
+    height: desiredHeight + heightDifference
+  });
+}
+```
