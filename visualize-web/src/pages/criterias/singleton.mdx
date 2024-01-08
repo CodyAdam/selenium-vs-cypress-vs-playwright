@@ -1,0 +1,174 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Keyword-driven Testing
+selenium: NA
+cypress: 5
+playwright: 4
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+# Définition
+
+Le pattern Singleton est un modèle de conception logicielle, spécifique non pas au test logiciel, mais souvent rencontré dans le développement de logiciels. Il est important de clarifier cette distinction avant de décrire ce qu'est le modèle Singleton.
+
+Le modèle Singleton est un type de modèle de conception de création utilisé pour garantir qu'une classe n'a qu'une seule instance et fournit un point d'accès global à celle-ci. Voici un aperçu de ses caractéristiques clés :
+
+1. **Instance Unique** : Le modèle garantit qu'une classe n'a qu'une seule instance. Il limite l'instanciation d'une classe à un seul objet. Ceci est utile lorsque précisément un objet est nécessaire pour coordonner les actions dans tout le système.
+
+2. **Accès Global** : Le Singleton offre un moyen d'accéder à son instance unique de manière globale. Cela se fait généralement par le biais d'une méthode statique qui renvoie l'instance de la classe Singleton.
+
+3. **Initialisation Paresseuse** : Souvent, les classes Singleton sont implémentées avec une initialisation paresseuse. Cela signifie que l'instance Singleton est créée uniquement lorsqu'elle est demandée pour la première fois, et non lorsque l'application démarre. Cela peut être efficace en termes de ressources et de performances.
+
+4. **Sécurité des Threads** : Dans une application multithread, un soin particulier doit être pris pour éviter que plusieurs threads créent plusieurs instances de la classe Singleton. Cela implique généralement des mécanismes de verrouillage ou de double vérification pour garantir qu'une seule instance est créée même dans un environnement multithread.
+
+Dans le contexte des tests logiciels, le modèle Singleton peut présenter certains défis, tels que :
+
+- **Isolement des Tests** : Étant donné que les instances Singleton sont globales, les tests pour une partie du système pourraient affecter l'état du Singleton, ce qui à son tour affecte d'autres tests.
+- **Difficultés de Simulation** : Il peut être difficile de remplacer les instances Singleton par des objets simulés à des fins de test.
+
+Dans l'ensemble, bien que le modèle Singleton soit un outil utile dans certains scénarios, il doit être utilisé avec discernement, en tenant compte de son impact potentiel sur la conception du système et la testabilité.
+
+# Scénario de test
+
+Pour cette évaluation du Singleton nous allons créer un fausse classe de base de données qui utilise le Singleton pour gérer la connexion à la base de données. Nous allons ensuite créer un test qui utilise cette classe de base de données et vérifier que le Singleton fonctionne comme prévu.
+
+```ts
+// fake-database.ts
+export class DatabaseSingleton {
+  private static instance: DatabaseSingleton;
+
+  // A mock state representing some data in the database.
+  private databaseNumber: number = 0;
+
+  private constructor() {
+    // Private constructor to prevent direct construction calls with the `new` operator.
+  }
+
+  static getInstance(): DatabaseSingleton {
+    if (!DatabaseSingleton.instance) {
+      DatabaseSingleton.instance = new DatabaseSingleton();
+    }
+    return DatabaseSingleton.instance;
+  }
+
+  public mutateDatabase(): void {
+    // Here, we're simply incrementing the number to simulate a mutation.
+    this.databaseNumber++;
+  }
+
+  public getDatabaseState(): number {
+    // Method to get the current state of the database.
+    return this.databaseNumber;
+  }
+}
+```
+
+The implementation of the Singleton is fairly straightforward and will be the same for all the frameworks.
+
+We can get the instance of the Singleton by calling `DatabaseSingleton.getInstance()`. This will return the instance of the Singleton. If the instance does not exist, it will create a new instance and return it.
+
+
+# Résultats
+
+## Cypress & Selenium
+
+Since we are using a single instance, we have a single state that can change over time. This means that if we run the tests sequentially, the state will be preserved across tests. 
+
+However, if we run the tests in parallel, we can't predict the order in which the tests will run. This means that the state of the database might be unpredictable.
+
+Cypress (and Selenium Mocha) runs all tests sequentially, we can simply run the tests in order of declaration and expect them to pass.
+
+```ts
+import { DatabaseSingleton } from "./fake-database";
+
+describe("DatabaseSingleton Tests", () => {
+  it("Initial state of database should be 0", () => {
+    const db = DatabaseSingleton.getInstance();
+    expect(db.getDatabaseState()).to.eq(0);
+  });
+
+  it("Mutating database state should increment the number", () => {
+    const db = DatabaseSingleton.getInstance();
+    db.mutateDatabase(); // This should increment the number
+    expect(db.getDatabaseState()).to.eq(1);
+  });
+
+  it("Database state should persist across tests", () => {
+    const db = DatabaseSingleton.getInstance();
+    // The state should be 1 from the previous test
+    expect(db.getDatabaseState()).to.eq(1);
+  });
+
+  it("Further mutation of database state", () => {
+    const db = DatabaseSingleton.getInstance();
+    db.mutateDatabase(); // Increment again
+    expect(db.getDatabaseState()).to.eq(2);
+  });
+});
+
+describe("Parallel DatabaseSingleton Tests", () => {
+  it("Database state should persist across tests and parallel runs", () => {
+    const db = DatabaseSingleton.getInstance();
+    expect(db.getDatabaseState()).to.eq(2);
+  });
+});
+```
+
+## Playwright
+
+<ThumbWarningAlert>
+  <p class="text-sm">
+    Playwright runs tests in parallel by default. This means that the state of the database might be unpredictable for our scenario.
+  </p>
+</ThumbWarningAlert>
+
+To run the tests sequentially, we can use the `--workers=1` flag. This will run the tests sequentially and we can expect the tests to pass.
+
+This will not pass the following test because of the parallel execution. `npx playwright test`.
+Running the tests sequentially will pass the test. `npx playwright test --workers=1`.
+
+<ThumbDownAlert>
+  <p class="text-sm">
+    Remeber that this is only pertinent for our scenario. In an other scenario, the Singleton might be used differently and might not be affected by parallel execution.
+  </p>
+</ThumbDownAlert>
+
+```ts
+import { DatabaseSingleton } from "./fake-database";
+import { test, expect, devices } from "@playwright/test";
+
+test.describe("DatabaseSingleton Tests", () => {
+  test("Initial state of database should be 0", () => {
+    const db = DatabaseSingleton.getInstance();
+    expect(db.getDatabaseState()).toBe(0);
+  });
+
+  test("Mutating database state should increment the number", () => {
+    const db = DatabaseSingleton.getInstance();
+    db.mutateDatabase(); // This should increment the number
+    expect(db.getDatabaseState()).toBe(1);
+  });
+
+  test("Database state should persist across tests", () => {
+    const db = DatabaseSingleton.getInstance();
+    // The state should be 1 from the previous test
+    expect(db.getDatabaseState()).toBe(1);
+  });
+
+  test("Further mutation of database state", () => {
+    const db = DatabaseSingleton.getInstance();
+    db.mutateDatabase(); // Increment again
+    expect(db.getDatabaseState()).toBe(2);
+  });
+});
+
+test.describe("Parallel DatabaseSingleton Tests", () => {
+  test("Database state should persist across tests and parallel runs", () => {
+    const db = DatabaseSingleton.getInstance();
+    expect(db.getDatabaseState()).toBe(2);
+  });
+});
+```

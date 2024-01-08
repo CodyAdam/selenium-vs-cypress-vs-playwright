@@ -1,5 +1,5 @@
 {
   "name": "monorepo",
   "private": true,
-  "workspaces": ["cypress", "playwright", "selenium"]
+  "workspaces": ["cypress", "playwright", "selenium", "visualize-web"]
 }

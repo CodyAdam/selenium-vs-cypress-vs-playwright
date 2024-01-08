@@ -1,0 +1,201 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Data Driven Testing
+selenium: 3
+cypress: 4
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+
+# Définition
+
+Le Data Driven Testing (DDT), ou test piloté par les données, est une méthodologie de test logiciel où les scénarios de test ne sont pas seulement codés, mais sont également alimentés par un ensemble de données externes. Ces données peuvent inclure des entrées de test, des chemins d'exécution attendus et des résultats attendus. Cette approche permet de tester le comportement d'une application dans différentes conditions et avec différents ensembles de données.
+
+L'utilité du Data Driven Testing réside dans plusieurs aspects :
+
+1. **Réutilisabilité des tests** : Les cas de test peuvent être réutilisés pour différents ensembles de données, ce qui rend les tests plus efficaces et moins sujets à des erreurs dues à la réécriture du code.
+
+2. **Couverture de test étendue** : En utilisant un large éventail de données d'entrée, les tests peuvent couvrir plus de scénarios, ce qui augmente la probabilité de détecter des anomalies ou des comportements inattendus dans l'application.
+
+3. **Maintenance facilitée** : Si une modification doit être apportée, elle peut souvent se limiter aux données de test plutôt qu'au script de test lui-même. Cela simplifie la maintenance et les mises à jour des tests.
+
+4. **Tests plus robustes et fiables** : En testant l'application avec de multiples combinaisons de données, les tests deviennent plus robustes et fournissent une meilleure assurance quant à la qualité et à la fiabilité du logiciel.
+
+5. **Automatisation efficace** : Le DDT s'adapte bien à l'automatisation, permettant une exécution rapide et répétée de tests avec différentes données sans intervention manuelle.
+
+Le Data Driven Testing permet une approche plus flexible, exhaustive et efficace du test logiciel, en particulier dans les environnements où les exigences et les données changent fréquemment.
+
+# Scénario de test
+
+Pour cette évaluation, nous allons tester un formulaire d'authentification avec une liste d'utilisateurs et de mots de passe. 
+
+Nous utilisons https://conduit-realworld-example-app.fly.dev/#/login comme application de test.
+
+# Critères d'Évaluation
+
+- Facilité de mise en place
+- Facilité de lecture du code
+- Facilité de maintenance
+
+# Résultats
+
+## Cypress
+
+Cypress, supporte le Data Driven Testing (DDT). Voici comment il permet de mettre en œuvre cette méthode :
+
+1. **Utilisation de fichiers externes pour les données de test** : Cypress peut lire des données à partir de fichiers externes comme JSON, CSV, ou même des bases de données. Ces fichiers peuvent être utilisés pour alimenter les tests avec différents ensembles de données. Par exemple, vous pouvez stocker des données d'utilisateur dans un fichier JSON et utiliser ces données pour tester différentes situations de connexion.
+
+Exemple:
+
+Voici une hiérarchie des fichiers simplifiée pour un projet Cypress :
+
+```
+cypress
+├─ e2e
+│  ├─ data-driven
+│  │  └─ realworld.cy.ts
+└─ fixtures
+   └─ users.json
+```
+
+Le fichier `users.json` contient les données des utilisateurs au format JSON :
+
+```json
+[
+  {
+    "username": "test-acc-1",
+    "email": "test-acc-1@gmail.com",
+    "password": "gha2vzx7kbt!BXR6xuz"
+  },
+  {
+    "username": "Test dummy 2",
+    "email": "test-acc-2@gmail.com",
+    "password": "ycf*TUD@jea8kbx8yrd"
+  },
+  {
+    "username": "test-acc-3",
+    "email": "test-acc-3@gmail.com",
+    "password": "fqt8wgw-rtr5GYJ9uka"
+  }
+]
+```
+
+
+2. **Boucles et itérations** : Avec Cypress, vous pouvez itérer sur un ensemble de données en utilisant des boucles JavaScript standards comme `forEach` ou `for`. Chaque itération peut passer un nouvel ensemble de données à un test, permettant ainsi d'exécuter le même scénario de test avec différentes valeurs d'entrée.
+
+Exemple :
+
+```ts
+it("should be able to login with all users", () => {
+  cy.fixture("users").each((user: User) => {
+    cy.visit(LOGIN_URL);
+    cy.get("input[type='email']").type(user.email);
+    cy.get("input[type='password']").type(user.password);
+    cy.get("button").click();
+
+    // assert that we have the correct user logged in
+    cy.get("nav").contains(user.username);
+  });
+});
+```
+
+3. **Commandes personnalisées** : Cypress permet de créer des commandes personnalisées qui peuvent être utilisées pour implémenter des routines de test répétitives avec différentes données. Ces commandes peuvent être configurées pour accepter des données en tant que paramètres et les utiliser dans les tests.
+
+4. **Intégration avec des outils de CI/CD** : Cypress s'intègre facilement avec les outils de CI/CD (Intégration Continue / Déploiement Continu) où les tests pilotés par les données peuvent être exécutés dans différents environnements et avec différents ensembles de données de manière automatisée.
+
+Pour mettre en œuvre le Data Driven Testing avec Cypress, vous devez structurer vos tests de manière à ce qu'ils puissent accepter des données de différentes sources et exécuter les assertions basées sur ces données. La documentation et les communautés en ligne de Cypress offrent des exemples et des guides sur la manière de le faire efficacement.
+
+<ThumbUpAlert>
+  <p>Facile à mettre en place, le code est très lisible et facile à maintenir. L'utilisation des fichiers externe est simple et efficace grâce à la commande <code>cy.fixture()</code></p>
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+  <p>Necessite de se familiariser avec l'API fixture de Cypress.</p>
+</ThumbDownAlert>
+
+<ThumbDownAlert>
+  <p>Oblige à utiliser une structure de fichier particulière.</p>
+</ThumbDownAlert>
+
+## Playwright
+
+Playwright, supporte le Data Driven Testing (DDT) par défaut. Cependant, Playwright a moins d'avis sur la manière de mettre en œuvre les tests basés sur les données. Il n'oblige pas de structure particulière comme Cypress avec les fichiers fixtures.
+
+Pour utiliser un fichier de données externe, il suffit de l'importer dans le fichier de test et de l'utiliser dans les tests directement.
+
+```ts
+import users from "./users.json";
+
+for (const user of users as User[]) {
+  ...
+  await page.fill("input[type='email']", user.email);
+  await page.fill("input[type='password']", user.password);
+  await page.click("button");
+  ...
+}
+```
+
+<ThumbUpAlert>
+  <p>Très facile à mettre en place et à maintenir. Le code est très lisible.</p>
+</ThumbUpAlert>
+
+<ThumbUpAlert>
+  <p>Plus de liberté que Cypress sur la l'organisation des fichiers de données.</p>
+</ThumbUpAlert>
+
+## Selenium
+
+Selenium supporte également le Data Driven Testing (DDT) en utilisant des fichiers de données externes comme JSON. Voici comment vous pouvez le mettre en œuvre :
+
+1. **Configuration du projet TypeScript** : Assurez-vous que votre `tsconfig.json` est configuré pour permettre l'importation de modules JSON. Vous avez déjà la configuration requise avec `"resolveJsonModule": true` et `"esModuleInterop": true`.
+
+  ```json
+  // tsconfig.json
+  {
+      "compilerOptions": {
+          ...
+          "resolveJsonModule": true,
+          "esModuleInterop": true,
+      }
+  }
+  ```
+
+2. **Importation des données** : Importez vos données utilisateur depuis un fichier JSON comme montré ci-dessous. Vous avez déjà inclus cette étape dans votre configuration.
+
+  ```ts
+  import users from './users.json';
+  ```
+
+3. **Configuration de Selenium WebDriver** : Configurez le WebDriver de Selenium pour interagir avec le navigateur. Vous pouvez utiliser ChromeDriver comme indiqué précédemment.
+
+4. **Rédaction des tests avec les données importées** : Utilisez les données importées pour alimenter vos tests. Créez une boucle pour itérer sur chaque ensemble de données utilisateur et exécuter les tests.
+
+  Exemple de test avec Selenium :
+
+  ```typescript
+  import users from './users.json';
+
+  describe("Data Driven Tests with Selenium", () => {
+    users.forEach(user => {
+      it("should login with each user", async () => {
+        await driver.get("https://conduit-realworld-example-app.fly.dev/#/login");
+        await driver.findElement(By.css("input[type='email']")).sendKeys(user.email);
+        await driver.findElement(By.css("input[type='password']")).sendKeys(user.password);
+        await driver.findElement(By.css("button")).click();
+        ...
+      });
+    });
+  });
+  ```
+
+5. **Exécution des tests** : Lancez vos tests avec Mocha. Assurez-vous que tous les modules nécessaires sont installés et correctement configurés.
+
+<ThumbUpAlert>
+  <p>Après la configuration initiale, le code est très lisible et facile à maintenir de la même manière que Playwright.</p>
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+  <p>La configuration initiale et la mise en place des tests peuvent être plus complexes et moins intuitives par rapport aux autres outils comme Cypress ou Playwright.</p>
+</ThumbDownAlert>

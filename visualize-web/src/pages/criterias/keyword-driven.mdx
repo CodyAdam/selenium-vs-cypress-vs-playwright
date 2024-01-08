@@ -1,0 +1,147 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Keyword-driven Testing
+selenium: NA
+cypress: 5
+playwright: 4
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+# Définition
+
+Le Keyword-driven Testing (testing piloté par mots-clés) est une méthodologie de test logiciel qui sépare la conception des cas de test de leur exécution. Cette approche implique la définition de mots-clés pour des actions de test communes, telles que saisir du texte ou cliquer sur un bouton. Ces mots-clés représentent des actions de haut niveau, rendant les cas de test plus faciles à comprendre, à concevoir et à maintenir, en particulier pour les individus sans connaissances de programmation approfondies.
+
+Voici comment cela fonctionne typiquement :
+
+1. **Définir les Mots-clés** : Des mots-clés sont définis pour diverses actions pouvant être effectuées dans l'application testée. Par exemple, "EnterText", "ClickButton", "VerifyText", etc.
+
+2. **Créer des Cas de Test** : Les cas de test sont créés en utilisant ces mots-clés. Cela implique de spécifier la séquence de mots-clés avec les données requises. Par exemple, un cas de test pourrait être une séquence comme "EnterText \[dans le champ de connexion\], ClickButton \[bouton de connexion\], VerifyText \[sur la page d'accueil\]."
+
+3. **Exécuter les Tests** : Un outil d'automatisation de test lit les cas de test et interprète les mots-clés. Il effectue ensuite les actions correspondantes sur l'application.
+
+4. **Maintenance et Mises à Jour** : Si l'application change, seules les définitions des mots-clés doivent être mises à jour dans la plupart des cas, plutôt que chaque cas de test individuel.
+
+Cette méthodologie est particulièrement utile dans les grands projets ou lorsque les cas de test doivent être écrits par des individus qui peuvent ne pas avoir de solides compétences en programmation mais possèdent une bonne connaissance du domaine. Elle favorise la réutilisabilité du code et rend les tests automatisés plus accessibles. De plus, elle peut simplifier considérablement le processus de maintenance des tests, car les changements dans l'interface utilisateur ou la fonctionnalité de l'application pourraient ne nécessiter que des modifications dans les définitions des mots-clés plutôt que dans chaque script de test.
+
+# Contexte
+
+<ThumbWarningAlert>
+  <p>Dans cette page nous allons uniquement les mots-clés pour les actions de base fournies par les frameworks (exemple: "clicker", "changer de page"). Car les mots-clés pour les actions personnalisées dépendent de l'application testée et sont donc spécifiques à chaque projet. (exemple: "Se connecter", "Ajouter un produit au panier", etc.)</p>
+</ThumbWarningAlert>
+
+# Critères d'évaluation
+
+- Facilité d'utilisation (expérience développeur) : Pas besoin de consulter constamment la documentation pour savoir comment utiliser le framework. Utilisez la fonction d'autocomplétion de votre IDE à notre avantage.
+- Lisibilité des cas de test : Les cas de test doivent être faciles à lire et à comprendre. Les cas de test doivent être rédigés de manière à être facilement compréhensibles par toute l'équipe.
+
+# Résultats
+
+## Cypress
+
+Mots-clés principaux de Cypress (liste non exhaustive):
+- describe
+- it
+- before
+- beforeEach
+- after
+- afterEach
+- check
+- clear
+- click
+- dblclick
+- rightclick
+- scrollIntoView
+- scrollTo
+- select
+- selectFile
+- trigger
+- type
+- uncheck
+
+Dans Cypress, toutes les fonctionnalités sont accessibles via l'objet `cy`. Par exemple, pour cliquer sur un élément, il faut utiliser `cy.click()`. Cela rend les cas de test plus verbeux et moins lisibles mais pratique pour l'autocomplétion.
+
+<ThumbDownAlert>
+  <p>L'objet `cy` est un objet global qui fait un peu tout et n'importe quoi. Il est donc difficile de savoir ce que fait réellement le test sans lire la documentation. Il n'a pas de signification explicite comme le `page` de Playwright.</p>
+</ThumbDownAlert>
+
+Exemple de cas de test avec Cypress :
+
+```ts
+describe("Realworld Conduit Data Driven", () => {
+  it("should be able to login with all users", () => {
+    cy.fixture("users").each((user: User) => {
+      cy.visit(LOGIN_URL);
+      cy.get("input[type='email']").type(user.email);
+      cy.get("input[type='password']").type(user.password);
+      cy.get("button").click();
+      cy.get("nav").contains(user.username); // check if correct user logged in
+    });
+  });
+});
+
+// logout after each test
+afterEach(() => {
+  // clear local storage
+  cy.clearLocalStorage();
+  // reload page
+  cy.reload();
+});
+```
+
+Only by reading the code we can understand what the test is doing and the steps it is taking. We don't need to know the implementation details of the `cy` object.
+
+<ThumbUpAlert>
+  <p>
+  Globalement le code est lisible par un humain. Les mots-clés sont explicites et les cas de test sont faciles à comprendre même pour les personnes qui ne connaissent pas Cypress.
+  </p>
+</ThumbUpAlert>
+
+## Playwright
+
+Playwright fournit également un objet `page` qui contient toutes les fonctionnalités pour interagir avec le navigateur. Par exemple, pour cliquer sur un élément, il faut utiliser `page.click()`. 
+
+Exemple de cas de test avec Playwright :
+
+```ts
+test.describe("Realworld Conduit Data Driven", () => {
+  test("should be able to login with all users", async ({ page }) => {
+
+    for (const user of users as User[]) {
+      await page.goto(LOGIN_URL);
+      await page.fill("input[type='email']", user.email);
+      await page.fill("input[type='password']", user.password);
+      await page.click("button");
+      await expect(page.locator("nav")).toContainText(user.username);
+      await page.evaluate(() => localStorage.clear());
+      await page.reload();
+    }
+  });
+});
+```
+
+De la même manière, le code est lisible par un humain, comme la ligne `await expect(page.locator("nav")).toContainText(user.username);` qui peut être lue comme "J'attend que la barre de navigation de la page contienne le nom d'utilisateur".
+
+<ThumbUpAlert>
+  <p>
+  Globalement le code est lisible par un humain. Les mots-clés sont explicites et les cas de test sont faciles à comprendre même pour les personnes qui ne connaissent pas Playwright.
+  </p>
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+  <p>
+  Cela est simple et facile à comprendre, mais il y a des mots-clés superflus comme `await` qui rendent le code moins lisible.
+  </p>
+</ThumbDownAlert>
+
+## Selenium
+
+Non pertinent à Selenium. Voir la section ci-dessus.
+
+<ThumbWarningAlert>
+  <p>
+  Selenium n'est pas un framework de test, mais une bibliothèque d'automatisation de navigateur. Il ne fournit pas de mots-clés pour les actions de base, mais uniquement des méthodes pour interagir avec le navigateur. Il est donc nécessaire d'utiliser un framework de test pour écrire des tests automatisés avec Selenium. Dans nos exemples, nous utilisons Selenium avec le framework de test Mocha. C'est donc Mocha qui fournit les mots-clés pour les actions de base.
+  </p>
+</ThumbWarningAlert>
