@@ -1,13 +1,13 @@
-import React from "react";
+import React, {useMemo} from "react";
 import TinderCard from "react-tinder-card";
 import {type SVGProps, useState} from "react";
 
 
 type Criteria = {
   title: string;
-  selenium: number;
-  cypress: number;
-  playwright: number;
+  selenium: number | "NA";
+  cypress: number | "NA";
+  playwright: number | "NA";
 };
 type TinderCardWrapperProps = {
   criteria: Criteria[];
@@ -26,7 +26,7 @@ const directionToWeight = (direction: string) => {
 }
 
 
-const getFirstPlace = (results: {selenium: number, cypress: number, playwright: number}) => {
+const getFirstPlace = (results: {selenium: number | "NA", cypress: number | "NA", playwright: number | "NA"}) => {
   if (results.selenium > results.cypress && results.selenium > results.playwright) {
     return "Selenium";
   } else if (results.cypress > results.selenium && results.cypress > results.playwright) {
@@ -43,6 +43,70 @@ export default function TinderCardWrapper(props: TinderCardWrapperProps) {
   (Criteria & {direction: string})[]
   >([]);
 
+  // compute results
+  const results = useMemo(() => {
+    let results = {
+      selenium: 0,
+      cypress: 0,
+      playwright: 0,
+    };
+
+    swipedCards.forEach((card) => {
+      results.selenium += (card.selenium === "NA" ? 0 : card.selenium) * directionToWeight(card.direction);
+      results.cypress += (card.cypress === "NA" ? 0 : card.cypress) * directionToWeight(card.direction);
+      results.playwright += (card.playwright === "NA" ? 0 : card.playwright) * directionToWeight(card.direction);
+    });
+    return results;
+  } , [swipedCards]);
+
+
+  const
+    placeResult
+      = useMemo(() => {
+      let firstPlace = "";
+      let secondPlace = "";
+      let thirdPlace = "";
+
+
+
+
+      if (results.selenium > results.cypress && results.selenium > results.playwright) {
+        firstPlace = "Selenium";
+        if (results.cypress > results.playwright) {
+          secondPlace = "Cypress";
+          thirdPlace = "Playwright";
+        } else {
+          secondPlace = "Playwright";
+          thirdPlace = "Cypress";
+        }
+      } else if (results.cypress > results.selenium && results.cypress > results.playwright) {
+        firstPlace = "Cypress";
+        if (results.selenium > results.playwright) {
+          secondPlace = "Selenium";
+          thirdPlace = "Playwright";
+        } else {
+          secondPlace = "Playwright";
+          thirdPlace = "Selenium";
+        }
+      } else {
+        firstPlace = "Playwright";
+        if (results.selenium > results.cypress) {
+          secondPlace = "Selenium";
+          thirdPlace = "Cypress";
+        } else {
+          secondPlace = "Cypress";
+          thirdPlace = "Selenium";
+        }
+      }
+
+      return {
+        firstPlace,
+        secondPlace,
+        thirdPlace,
+      };
+    }, [results.selenium, results.cypress, results.playwright]);
+
+
 
   const handleSwipe = (direction: string, criteria: Criteria) => {
     setSwipedCards([...swipedCards, { ...criteria, direction }]);
@@ -50,53 +114,6 @@ export default function TinderCardWrapper(props: TinderCardWrapperProps) {
 
 
   if (swipedCards.length === props.criteria.length) {
-    // compute results
-    const results = {
-      selenium: 0,
-      cypress: 0,
-      playwright: 0,
-    };
-
-    swipedCards.forEach((card) => {
-      results.selenium += card.selenium * directionToWeight(card.direction);
-      results.cypress += card.cypress * directionToWeight(card.direction);
-      results.playwright += card.playwright * directionToWeight(card.direction);
-    });
-
-    let firstPlace = "";
-    let secondPlace = "";
-    let thirdPlace = "";
-
-    if (results.selenium > results.cypress && results.selenium > results.playwright) {
-      firstPlace = "Selenium";
-      if (results.cypress > results.playwright) {
-        secondPlace = "Cypress";
-        thirdPlace = "Playwright";
-      } else {
-        secondPlace = "Playwright";
-        thirdPlace = "Cypress";
-      }
-    } else if (results.cypress > results.selenium && results.cypress > results.playwright) {
-      firstPlace = "Cypress";
-      if (results.selenium > results.playwright) {
-        secondPlace = "Selenium";
-        thirdPlace = "Playwright";
-      } else {
-        secondPlace = "Playwright";
-        thirdPlace = "Selenium";
-      }
-    } else {
-      firstPlace = "Playwright";
-      if (results.selenium > results.cypress) {
-        secondPlace = "Selenium";
-        thirdPlace = "Cypress";
-      } else {
-        secondPlace = "Cypress";
-        thirdPlace = "Selenium";
-      }
-    }
-
-
 
 
     return (
@@ -111,9 +128,9 @@ export default function TinderCardWrapper(props: TinderCardWrapperProps) {
         <div className="flex flex-col items-center justify-center gap-12">
           <h1 className="text-3xl font-bold">Mes résultats</h1>
           <Podium
-            firstPlace={firstPlace}
-            secondPlace={secondPlace}
-            thirdPlace={thirdPlace}
+            firstPlace={placeResult.firstPlace}
+            secondPlace={placeResult.secondPlace}
+            thirdPlace={placeResult.thirdPlace}
             ></Podium>
         </div>
 
