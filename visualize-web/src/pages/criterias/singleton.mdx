@@ -1,9 +1,9 @@
 ---
 layout: ../../layouts/Criteria.astro
 title: Keyword-driven Testing
-selenium: NA
+selenium: 5
 cypress: 5
-playwright: 4
+playwright: 5
 ---
 
 import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
@@ -120,8 +120,8 @@ describe("Parallel DatabaseSingleton Tests", () => {
 ## Playwright
 
 <ThumbWarningAlert>
-  <p class="text-sm">
-    Playwright runs tests in parallel by default. This means that the state of the database might be unpredictable for our scenario.
+  <p>
+    Playwright runs tests in parallel by default. This means that the state of the database might be unpredictable for our scenario. This is not good or bad, it simply means that we need to be aware of this when writing our tests.
   </p>
 </ThumbWarningAlert>
 
@@ -130,11 +130,11 @@ To run the tests sequentially, we can use the `--workers=1` flag. This will run 
 This will not pass the following test because of the parallel execution. `npx playwright test`.
 Running the tests sequentially will pass the test. `npx playwright test --workers=1`.
 
-<ThumbDownAlert>
-  <p class="text-sm">
+<ThumbWarningAlert>
+  <p>
     Remeber that this is only pertinent for our scenario. In an other scenario, the Singleton might be used differently and might not be affected by parallel execution.
   </p>
-</ThumbDownAlert>
+</ThumbWarningAlert>
 
 ```ts
 import { DatabaseSingleton } from "./fake-database";
