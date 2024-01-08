@@ -1,5 +1,7 @@
+import React from "react";
 import TinderCard from "react-tinder-card";
 import {type SVGProps, useState} from "react";
+
 
 type Criteria = {
   title: string;

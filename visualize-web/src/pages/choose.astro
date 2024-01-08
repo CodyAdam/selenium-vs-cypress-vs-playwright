@@ -13,7 +13,7 @@ const criterias = await Astro.glob('./criterias/*.mdx');
 </head>
 <body class="bg-slate-200 max-w-4xl mx-auto h-full overflow-hidden">
 <div class='cardContainer h-full '>
-    <TinderCardWrapper criteria={criterias.map(value => value.frontmatter)} client:only="react" titles={criterias.map(value => value.frontmatter.title)}>
+    <TinderCardWrapper criteria={criterias.map(value => value.frontmatter as any)} client:only="react">
     </TinderCardWrapper>
 </div>
 
