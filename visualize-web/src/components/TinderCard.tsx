@@ -160,7 +160,7 @@ export default function TinderCardWrapper(props: TinderCardWrapperProps) {
   }
 
   return (
-    <div className="w-full h-full flex flex-col p-12 gap-12">
+    <div className="w-full h-full flex flex-col p-12 gap-12 overflow-hidden">
       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
         <div className="bg-yellow-400 h-2.5 rounded-full" style={
           {width: `${(swipedCards.length / props.criteria.length) * 100}%`}

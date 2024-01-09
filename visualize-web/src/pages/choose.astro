@@ -11,7 +11,7 @@ const criterias = await Astro.glob('./criterias/*.mdx');
     <meta name="generator" content={Astro.generator} />
     <title>Comparaison between Selenium, Cypress and Playwright</title>
 </head>
-<body class="bg-slate-200 max-w-4xl mx-auto h-full overflow-hidden">
+<body class="bg-slate-200 h-full max-w-4xl mx-auto">
 <div class='cardContainer h-full '>
     <TinderCardWrapper criteria={criterias.map(value => value.frontmatter as any)} client:only="react">
     </TinderCardWrapper>
