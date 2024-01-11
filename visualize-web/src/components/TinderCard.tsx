@@ -27,13 +27,36 @@ const directionToWeight = (direction: string) => {
 
 
 const getFirstPlace = (results: {selenium: number | "NA", cypress: number | "NA", playwright: number | "NA"}) => {
-  if (results.selenium > results.cypress && results.selenium > results.playwright) {
-    return "Selenium";
-  } else if (results.cypress > results.selenium && results.cypress > results.playwright) {
-    return "Cypress";
-  } else {
-    return "Playwright";
+  // Convert "NA" to 0 and keep the number as is
+  const seleniumScore = results.selenium === "NA" ? 0 : results.selenium;
+  const cypressScore = results.cypress === "NA" ? 0 : results.cypress;
+  const playwrightScore = results.playwright === "NA" ? 0 : results.playwright;
+
+  // Create an array of objects, each object containing the tool name and its score
+  const scores = [
+    { tool: 'selenium', score: seleniumScore },
+    { tool: 'cypress', score: cypressScore },
+    { tool: 'playwright', score: playwrightScore },
+  ];
+
+  // Sort the array in descending order of scores
+  scores.sort((a, b) => b.score - a.score);
+
+
+  // Check if the first and second tools have the same score
+  if (scores.every((score) => score.score === scores[0].score)) {
+    // If they do, return both tools as the first place
+    return `${scores[0].tool}, ${scores[1].tool} et ${scores[2].tool}`;
   }
+
+  // Check if the first and second tools have the same score
+  if (scores[0].score === scores[1].score) {
+    // If they do, return both tools as the first place
+    return `${scores[0].tool} et ${scores[1].tool}`;
+  }
+
+  // Otherwise, return the tool with the highest score
+  return scores[0].tool;
 }
 
 
