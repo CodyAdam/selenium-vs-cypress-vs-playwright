@@ -1,23 +1,22 @@
 ---
 import TinderCardWrapper from "../components/TinderCard";
-const criterias = await Astro.glob('./criterias/*.mdx');
+const criterias = await Astro.glob("./criterias/*.mdx");
 ---
 
 <html lang="en" class="h-full">
-<head>
+  <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>Comparaison between Selenium, Cypress and Playwright</title>
-</head>
-<body class="bg-slate-200 h-full max-w-4xl mx-auto">
-<div class='cardContainer h-full '>
-    <TinderCardWrapper criteria={criterias.map(value => value.frontmatter as any)} client:only="react">
-    </TinderCardWrapper>
-</div>
-
-</body>
+  </head>
+  <body class="bg-slate-200 h-full max-w-4xl mx-auto">
+    <div class="cardContainer h-full select-none">
+      <TinderCardWrapper
+        criteria={criterias.map((value) => value.frontmatter as any)}
+        client:only="react"
+      />
+    </div>
+  </body>
 </html>
-
-
