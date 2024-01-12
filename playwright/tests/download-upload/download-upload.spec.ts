@@ -1,10 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { readFileSync, rmSync } from 'fs';
+import { existsSync, readFileSync, rmSync } from 'fs';
 
 test.describe('download', () => {
 
     test.beforeEach(async () => {
-        rmSync(`${__dirname}/testFile.txt`)
+        if (existsSync(`${__dirname}/testFile.txt`)) {
+            rmSync(`${__dirname}/testFile.txt`)
+        }
     })
 
     test('Download file', async ({ page }) => {
