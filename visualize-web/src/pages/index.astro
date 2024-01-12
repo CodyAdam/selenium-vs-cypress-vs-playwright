@@ -34,11 +34,11 @@ const criterias = await Astro.glob('./criterias/*.mdx');
 				<tbody>
 				{criterias.map(criteria => (
 					<tr>
-						<td class="border p-4 flex items-center gap-2">
-							<a href={criteria.url}>
+						<td class="border flex items-center gap-2">
+							<a href={criteria.url} class="flex items-center gap-2 w-full p-4 hover:translate-x-2 transition-transform">
 								<svg xmlns="http://www.w3.org/2000/svg" class="h-6 fill-gray-500 hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M232.49 215.51L185 168a92.12 92.12 0 1 0-17 17l47.53 47.54a12 12 0 0 0 17-17ZM44 112a68 68 0 1 1 68 68a68.07 68.07 0 0 1-68-68"/></svg>
+								{criteria.frontmatter.title}
 							</a>
-							{criteria.frontmatter.title}
 						</td>
 						<td class="border p-4 w-2 text-center font-bold" style={{ backgroundColor: getColor(criteria.frontmatter.selenium) }}>{criteria.frontmatter.selenium}</td>
 						<td class="border p-4 w-2 text-center font-bold" style={{ backgroundColor: getColor(criteria.frontmatter.playwright) }}>{criteria.frontmatter.playwright}</td>
