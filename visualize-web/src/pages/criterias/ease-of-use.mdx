@@ -1,0 +1,55 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Facilité d'Utilisation
+selenium: 1
+cypress: 5
+playwright: 4
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+
+# Définition
+
+La facilité d'utilisation dans le contexte des frameworks de test fait référence à la simplicité avec laquelle les développeurs peuvent mettre en place, écrire, et exécuter des tests. Cela inclut la facilité d'accès aux attributs DOM, l'expérience de développement globale (DX), et la simplicité de la syntaxe.
+
+Les aspects clés à considérer sont :
+
+
+# Critères d'Évaluation
+
+- **Configuration initiale** : La complexité de la mise en place du framework pour la première fois.
+- **Écriture des tests** : La facilité avec laquelle les tests peuvent être écrits, y compris la lisibilité et la compréhension du code.
+- **Exécution des tests** : La simplicité d'exécution des tests, que ce soit via une interface graphique, une ligne de commande ou de manière totalement automatisée.
+
+# Résultats
+
+## Selenium
+
+Selenium obtient une note de 1/5 en termes de facilité d'utilisation. Il nécessite une configuration initiale relativement complexe, incluant la mise en place d'un runner de test.
+
+Cela est du au fait que Selenium est un framework de test bas niveau, nécessitant l'utilisation d'un langage de programmation pour écrire les tests. Dans nos autre critères, nous utilisons Mocha comme runner de test car Selenium ne peut pas être utilisé seul.
+
+<ThumbDownAlert>
+  <p>Configuration initiale complexe avec la nécessité de mettre en place un runner de test.</p>
+</ThumbDownAlert>
+
+## Cypress
+
+Cypress se distingue avec une note de 5/5. Il propose une expérience utilisateur remarquable grâce à son application "Launchpad", une interface web qui peut remplacer l'utilisation de la ligne de commande pour la gestion des tests.
+
+<ThumbUpAlert>
+  <p>Expérience utilisateur intuitive avec l'application "Launchpad", simplifiant la gestion des tests.</p>
+</ThumbUpAlert>
+
+## Playwright
+
+Playwright obtient une note de 4/5. Il facilite l'écriture et l'exécution de tests via la ligne de commande, offrant une expérience totalement headless et une syntaxe simple.
+
+<ThumbUpAlert>
+  <p>Lancement et exécution des tests simplifiés via la ligne de commande, favorisant une approche headless.</p>
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+  <p>Bien que la ligne de commande soit efficace, elle peut être moins intuitive pour les nouveaux utilisateurs comparée à des interfaces graphiques comme celle de Cypress.</p>
+</ThumbDownAlert>
