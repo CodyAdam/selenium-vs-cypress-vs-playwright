@@ -25,5 +25,6 @@ Cypress.on('test:before:run', () => {
         params: {
             locale: 'fr-FR'
         }
+        
     });
 });
