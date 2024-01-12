@@ -158,7 +158,7 @@ export default function TinderCardWrapper(props: TinderCardWrapperProps) {
         </div>
 
 
-        <section className="space-y-4">
+        <section className="space-y-4 pb-20">
         <h2 className="font-bold text-xl text-center">Tous les résultats</h2>
         <div className="space-y-2">
           {swipedCards.map((card) => (
