@@ -1,0 +1,75 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Headless and CI support
+selenium: 3
+cypress: 4
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+
+# Définition
+
+Le support de Headless et CI évalue comment les frameworks de test gèrent l'exécution des tests sans interface graphique (headless) et leur intégration dans les pipelines d'intégration continue (CI). Le mode headless est essentiel pour les tests automatisés dans les environnements CI, car il permet d'exécuter des tests plus rapidement et sans nécessiter d'interface graphique.
+
+# Critères d'Évaluation
+
+- Capacité à exécuter des tests en mode headless
+- Intégration avec les outils et pipelines CI
+- Facilité de configuration pour le CI
+- Performance et fiabilité des tests en mode headless dans les environnements CI
+
+# Résultats
+
+## Selenium
+
+Selenium reçoit une note de 3/5. Bien qu'il supporte le mode headless, l'intégration avec les environnements CI peut nécessiter une configuration supplémentaire. La capacité de Selenium à s'intégrer dans divers environnements CI est un atout, mais peut demander plus d'efforts pour une configuration optimale.
+
+Exemple de configuration pour Chrome :
+
+```js
+let driver = await env
+  .builder()
+  .setChromeOptions(options.addArguments('--headless=new'))
+  .build();
+await driver.get('https://selenium.dev');
+await driver.quit();
+```
+
+<ThumbUpAlert>
+  <p>Supporte le mode headless, utile pour les tests automatisés dans les CI.</p>
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+  <p>Intégration CI nécessitant une configuration manuelle approfondie.</p>
+</ThumbDownAlert>
+
+## Cypress
+
+Cypress, avec une note de 4/5, excelle dans le support du mode headless et son intégration dans les CI est relativement simple. L'utilisation de Cypress dans les CI est facilitée par des commandes de ligne de commande claires et une configuration minimale, rendant l'exécution des tests automatisés rapide et efficace.
+
+Pour exécuter Cypress en mode headless, il suffit de lancer les tests avec `cypress run`.
+
+<ThumbUpAlert>
+  <p>Intégration aisée dans les CI avec des commandes simples pour le mode headless.</p>
+</ThumbUpAlert>
+
+## Playwright
+
+Playwright, avec un score parfait de 5/5, est conçu pour fonctionner en mode headless par défaut, ce qui le rend idéal pour les CI. Son intégration facile dans les environnements CI, combinée à sa rapidité et sa fiabilité, fait de Playwright un outil puissant pour les tests automatisés dans les pipelines CI.
+
+
+> Run your tests with the --debug flag to open the inspector. This configures Playwright for debugging and opens the inspector. Additional useful defaults are configured when --debug is used:
+>
+> - Browsers launch in headed mode
+> - Default timeout is set to 0 (= no timeout)
+
+
+<ThumbUpAlert>
+  <p>Support exceptionnel de headless et CI avec une intégration facile et des performances optimales.</p>
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+  <p>Une configuration spécifique peut être nécessaire pour basculer entre les modes headless et non-headless.</p>
+</ThumbDownAlert>
