@@ -1,0 +1,133 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Tab / Window
+cypress: 1
+playwright: 5
+selenium: 4
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbInfoAlert from '../../components/ThumbInfoAlert.astro'
+
+# Définition
+
+La gestion des onglets et fenêtres consiste à pouvoir librement naviguer entre les onglets et fenêtres ouvertes par le navigateur.
+
+# Scénario de test
+
+- The Internet : Ouvrir un nouvel onglet et revenir sur l'onglet précédent
+- Alapanme github.io : Ouvrir une nouvelle fenêtre et revenir sur la fenêtre précédente
+
+# Cypress
+
+<ThumbDownAlert>
+    Cypress ne prend pas en charge la gestion des onglets et fenêtres. Il n'est pas non plus prévu que ce soit le cas dans le futur.
+</ThumbDownAlert>
+<ThumbUpAlert>
+    Il est possible de facilement contourner le problème lorsque la création d'onglet/fenêtre se fait via l'attribut `target` d'un lien.
+    Il suffit alors de remplacer la valeur de l'attribut `target` par `_self` pour que le lien s'ouvre dans le même onglet/fenêtre.
+</ThumbUpAlert>
+
+```ts
+it('Open new tab', () => {
+    cy.visit('https://the-internet.herokuapp.com/windows')
+    cy.contains('Click Here').invoke('attr', 'target', '_self').click()
+    cy.contains('New Window').should('be.visible')
+    cy.go('back')
+    cy.contains('Click Here').should('be.visible')
+})
+```
+
+<ThumbDownAlert>
+    La gestion des fenêtre ouvertes par un autre moyen n'est pas aussi simple, l'utilisateur Alapan proposait une solution sur [son site](https://testersdock.com/cypress-new-window/) mais elle est plutôt convoluée, et marquée comme dépréciée avec la version courante de Cypress.
+    De plus la solution ne semblait fonctionner qu'avec des liens statiques.
+</ThumbDownAlert>
+
+
+# Playwright
+
+<ThumbUpAlert>
+    Playwright permet de facilement gérer les onglets et fenêtres grâce à l'objet `contexte`.
+</ThumbUpAlert>
+
+```ts
+test('Open new tab', async ({context, page}) => {
+    await page.goto('https://the-internet.herokuapp.com/windows')
+    const pagePromise = context.waitForEvent('page');
+    await page.getByText('Click Here').click();
+    const newPage = await pagePromise;
+    await newPage.waitForLoadState();
+    expect(newPage.getByText('New Window')).toBeVisible();
+    expect(page.getByText('Click Here')).toBeVisible();
+})
+```
+
+<ThumbUpAlert>
+    S'il s'agit d'une fenêtre popup, il est possible d'y accéder via l'objet `page` directement.
+</ThumbUpAlert>
+
+```ts
+test('Open new window', async ({page}) => {
+    await page.goto('https://alapanme.github.io/testing-cypress.html')
+    const popupPromise = page.waitForEvent('popup');
+    await page.getByText('Try it').click();
+    const popup = await popupPromise;
+    await popup.waitForLoadState();
+    expect(popup.getByText('Welcome to the-internet')).toBeVisible();
+    expect(page.getByText('Try it')).toBeVisible();        
+})
+```
+
+# Selenium
+
+<ThumbUpAlert>
+    Selenium prend en charge la gestion des onglets et fenêtres via les méthodes `getWindowHandle` et `getWindowHandles` pour obtenir respectivement l'identifiant de la fenêtre courante et la liste des identifiants des fenêtres ouvertes, ainsi que la méthode `switchTo` pour changer de fenêtre.
+</ThumbUpAlert>
+
+```ts
+it('Open new tab', async () => {
+    await driver.get('https://the-internet.herokuapp.com/windows')
+    const win1 = await driver.getWindowHandle();
+    assert((await driver.getAllWindowHandles()).length === 1, 'There is more than one window');
+    await driver.findElement(By.linkText('Click Here')).click();
+    await driver.wait(
+        async () => (await driver.getAllWindowHandles()).length === 2,
+        10000,
+    );
+
+    const windows = await driver.getAllWindowHandles();
+    let win2: string;
+    for (const handle of windows) {
+        if (handle !== win1) {
+            win2 = handle;
+            await driver.switchTo().window(win2);
+        }
+    }
+    await driver.wait(
+        until.elementLocated(By.xpath("//*[contains(text(),'New Window')]")),
+        10000,
+    );
+    await driver.findElement(By.xpath("//*[contains(text(),'New Window')]")).isDisplayed(),
+
+    await driver.switchTo().window(win1);
+    await driver.wait(
+        until.elementLocated(By.linkText('Click Here')),
+        10000,
+    );
+    await driver.findElement(By.linkText('Click Here')).isDisplayed()
+})
+```
+
+<ThumbUpAlert>
+    Il n'y a pas de différence entre la gestion des onglets et des fenêtres.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+    Contrairement à Playwright, il n'est pas possible d'accéder à  plusieurs fenêtres en même temps, il est nécessaire de changer de fenêtre avec l'objet `driver` à chaque fois.
+    Il est aussi important d'attendre que les onglets/fenêtres soient bien ouverts avant de les utiliser.
+</ThumbDownAlert>
+
+<ThumbInfoAlert>
+    Pour être sûr de réinitialiser les fenêtres avant chaque test, il est préférable d'initialiser le driver dans la méthode `beforeEach` plutôt que dans la méthode `before`.
+</ThumbInfoAlert>

@@ -1,0 +1,184 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Setup / Teardown
+cypress: 5
+playwright: 4
+selenium: 4
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+import ThumbInfoAlert from '../../components/ThumbInfoAlert.astro'
+
+# Définition
+
+Le Setup consiste en la configuration de l'environnement de test avant leur exécution. Il y a deux types de Setup : avant tous les tests et avant chaque test.
+Le Teardown consiste au contraire en la réinitialisation de l'environnement de test après leur exécution. Il y en a également deux types : après chaque test et après tous les tests.
+
+# Scénario de test
+## Opencart:
+### Avant tous les tests
+Login > Ajout d'un iPhone au panier > Logout
+
+### Avant chaque test
+Login
+
+### Tests
+- Vérification que le panier n'est pas vide
+- Vérification que le passage au paiement est possible
+
+### Après chaque test
+Logout
+
+### Après tous les tests
+Login > Suppression de l'iPhone du panier > Logout
+
+
+# Cypress
+
+<ThumbUpAlert>
+    Cypress met à disposition les méthodes `before` et `beforeEach`, ainsi que `after` et `afterEach` de Mocha respectivement pour le Setup et le Teardown.
+</ThumbUpAlert>
+
+Après avoir écrit des fonctions auxiliaires chargées du login et du logout pour éviter la duplication de code, on peut utiliser les méthodes de la manière suivante :
+
+```ts
+before(() => {
+    login()
+    // retour à la page d'accueil
+    cy.get('.img-fluid').click()
+    cy.get('h4').contains('iPhone').click()
+    cy.contains('Add to Cart').click()
+    logout()
+})
+
+beforeEach(() => {
+    login()
+})
+
+afterEach(() => {
+    logout()
+})
+
+after(() => {
+    login()
+    cy.contains('Shopping Cart').click()
+    // suppression de l'iPhone du panier
+    cy.get('.input-group > .btn-danger').click()
+    logout()
+})
+```
+
+<ThumbWarningAlert>
+    Bien que Cypress mette à disposition les méthodes `after` et `afterEach`, dans ses [bonnes pratiques](https://docs.cypress.io/guides/references/best-practices#Using-after-Or-afterEach-Hooks)
+    il est recommandé d'effectuer le Teardown avant même le setup, afin qu'il soit toujours exécuté, même en cas d'interruption des tests.
+</ThumbWarningAlert>
+
+<ThumbUpAlert>
+    Cypress permet de continuer la navigation manuellement après l'exécution des tests, tout en conservant le contexte de la page. Cela encourage au développement par les tests, et facilite leur débuggage.
+</ThumbUpAlert>
+
+
+# Playwright
+
+<ThumbUpAlert>
+    Playwright met à disposition les méthodes `beforeAll` et `beforeEach`, ainsi que `afterAll` et `afterEach` de Jest respectivement pour le Setup et le Teardown.
+</ThumbUpAlert>
+
+Après avoir écrit des fonctions auxiliaires chargées du login et du logout pour éviter la duplication de code, on peut utiliser les méthodes de la manière suivante :
+
+```ts
+test.beforeAll(async ({browser}) => {
+    const page = await browser.newPage();
+    await login(page);
+    // retour à la page d'accueil
+    await page.click('.img-fluid');
+    await page.getByRole('heading', { name: 'iPhone'})
+        .getByRole('link', { name: 'iPhone'}).click();
+    await page.click('text=Add to Cart');
+    await logout(page);
+})
+
+test.beforeEach(async ({ page }) => {
+    await login(page);
+})
+
+
+test.afterEach(async ({ page }) => {
+    await logout(page);
+})
+
+test.afterAll(async ({browser}) => {
+    const page = await browser.newPage();
+    await login(page);
+    await page.click('text=Shopping Cart');
+    // suppression de l'iPhone du panier
+    //await page.getByRole('button', { name: 'Remove'}).click();
+    await page.getByRole('button', { name: '' }).click();
+    await logout(page);
+})
+```
+
+<ThumbDownAlert>
+    Contraiement à Cypress, Playwright ne permet pas de continuer la navigation manuellement après l'exécution des tests, ce qui rend le débuggage plus difficile.
+</ThumbDownAlert>
+
+# Selenium
+
+<ThumbDownAlert>
+    Selenium ne dispose pas par défaut de méthodes de Setup et de Teardown. 
+</ThumbDownAlert>
+<ThumbUpAlert>
+    Il est cependant possible d'installer Mocha ou Jest pour en bénéficier.
+</ThumbUpAlert>
+
+Après avoir écrit des fonctions auxiliaires chargées du login et du logout pour éviter la duplication de code, on peut utiliser par exemple utiliser les méthodes de Mocha de la manière suivante :
+
+```ts
+before(async () => {
+    driver = await new Builder().forBrowser("chrome").build();
+    await driver.manage().window().maximize()
+
+    await login(driver)
+    // retour à la page d'accueil
+    await driver.findElement(By.css('#logo > a > img')).click();
+    await driver.sleep(500);
+    const element = await driver.findElement(By.linkText('iPhone'));
+    await scrollIntoView(driver, element);
+    await element.click();
+    await driver.sleep(500);
+    await driver.findElement(By.xpath(
+        "//*[contains(text(),'Add to Cart')]"
+    )).click();
+    await logout(driver)
+});
+
+beforeEach(async () => {
+    await login(driver)
+})
+
+afterEach(async () => {
+    await logout(driver)
+})
+
+after(async () => {
+    await login(driver)
+    await driver.findElement(By.xpath(
+        "//*[contains(text(),'Shopping Cart')]"
+    )).click();
+    await driver.sleep(100);
+    // suppression de l'iPhone du panier
+    await driver.findElement(By.css('.input-group > .btn-danger')).click();
+    await logout(driver)
+    
+    driver.quit()
+});
+```
+<ThumbInfoAlert>
+    Il est possible de profiter du Setup et du Teardown pour initialiser et détruire le driver.
+</ThumbInfoAlert>
+
+<ThumbDownAlert>
+    Une fois le driver détruit, il n'est plus possible de continuer la navigation manuellement comme avec Cypress.
+</ThumbDownAlert>

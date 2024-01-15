@@ -1,0 +1,182 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Cookies
+cypress: 5
+playwright: 4
+selenium: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+# Définition
+
+La gestion des cookies consiste à conserver les valeurs des cookies entre les tests. Cela permet de ne pas avoir à se reconnecter à chaque test, ou à reconfigurer les préférences du site.
+
+# Scénario de test
+
+- Opencart : changer la devise
+
+# Cypress
+
+<ThumbUpAlert>
+    Cypress supprime par défaut les cookies et le contenu des stockages local et de session avant chaque test, pour garantir leur isolation. Il est cependant possible d'utiliser la méthode `session` pour attribuer un identifiant à une session, et la restaurer à chaque appel de la méthode avec le même identifiant.
+</ThumbUpAlert>
+
+Il est possible de définir une commande personnalisée pour changer la devise dans le fichier `cypress/support/commands.ts` :
+
+```ts
+Cypress.Commands.add('useCurrency', (currency) => {
+    cy.session(currency, () => {
+        cy.visit('https://electre.kereval.cloud/opencart/index.php')
+        cy.contains('Currency').click()
+        switch (currency) {
+            case 'EUR':
+                cy.contains('€').click()
+                break
+            case 'GBP':
+                cy.contains('£').click()
+                break
+            case 'USD':
+                cy.contains('$').click()
+                break
+        }
+    })
+})
+```
+
+On peut ensuite utiliser cette commande dans les tests :
+
+```ts
+beforeEach(() => {
+    cy.useCurrency('GBP')
+    cy.visit('https://electre.kereval.cloud/opencart/index.php')
+})
+
+it('Check currency', () => {
+    cy.contains('£').should('be.visible')
+})
+
+it('Check currency other', () => {
+    cy.contains('£').should('be.visible')
+})
+```
+<ThumbUpAlert>
+    Si la valeur des cookies n'est importante que pour un seul test, on peut utiliser des méthodes telles que `clearCookie`, `setCookie` et `getCookie` pour y accéder :
+</ThumbUpAlert>
+
+```ts
+it('Change currency', () => {
+    cy.visit('https://electre.kereval.cloud/opencart/index.php')
+    cy.getCookie('currency').should('have.property', 'value', 'EUR')
+    cy.contains('£').should('not.be.visible')
+    cy.clearCookies()
+    cy.setCookie('currency', 'GBP')
+    cy.reload()
+    cy.contains('£').should('be.visible')
+})
+```
+<ThumbUpAlert>
+    Il est possible d'obtenir un cookie spécifique pour un domaine avec `getCookie`, tous les cookies pour un domaine avec `getCookies` ou tous les cookies du navigateur avec `getAllCookies`.
+    De même, il est possible supprimer un cookie spécifique avec `clearCookie`, tous les cookies pour un domaine avec `clearCookies` ou tous les cookies du navigateur avec `clearAllCookies`.
+</ThumbUpAlert>
+
+# Playwright
+
+<ThumbUpAlert>
+    Playwright rend possible la configuration des cookies depuis objet contexte, accessible depuis la méthode `beforeEach`.
+</ThumbUpAlert>
+
+```ts
+test.beforeEach(async ({ context, page }) => {
+    await context.addCookies([
+        { name: 'currency', value: 'GBP', domain: 'electre.kereval.cloud', path: '/'},
+    ])
+    await page.goto('https://electre.kereval.cloud/opencart/index.php')
+})
+
+test('Check currency', async ({ page }) => {
+    await expect(page.getByText('£ Currency')).toBeVisible()
+})
+
+test('Check currency other', async ({ page }) => {
+    await expect(page.getByText('£ Currency')).toBeVisible()
+})
+```
+
+<ThumbUpAlert>
+    L'objet context est aussi accessible depuis les tests, ce qui permet de modifier leur valeur pour un test spécifique.
+</ThumbUpAlert>
+
+```ts
+test('Change currency', async ({ context, page }) => {
+    await page.goto('https://electre.kereval.cloud/opencart/index.php')
+    const cookies = await context.cookies()
+    expect(cookies.find(c => c.name === 'currency')?.value).toBe('EUR')
+    await expect(page.getByText('£ Currency')).not.toBeVisible()
+    await context.clearCookies()
+    await context.addCookies([
+        { name: 'currency', value: 'GBP', domain: 'electre.kereval.cloud', path: '/'},
+    ])
+    await page.reload()
+    await expect(page.getByText('£ Currency')).toBeVisible()
+})
+```
+
+<ThumbDownAlert>
+    Il n'est pas possible d'obtenir ou de supprimer des cookies spécifiques, mais seulement d'obtenir/supprimer tous les cookies du navigateur avec respectivement les méthodes `cookies` et `clearCookies`.
+</ThumbDownAlert>
+
+# Selenium
+
+<ThumbUpAlert>
+    Selenium rend possible la configuration de cookies via l'objet `driver`.
+</ThumbUpAlert>
+
+```ts
+beforeEach(async () => {
+    await driver.get('https://electre.kereval.cloud/opencart/404');
+    await driver.manage().addCookie({name: 'currency', value: 'GBP'})
+    await driver.get('https://electre.kereval.cloud/opencart/index.php');
+})
+
+it('Check currency', async () => {
+    const element = await driver.findElement(By.partialLinkText('£'));
+    assert(await element.isDisplayed(), 'Element is not displayed');
+})
+
+it('Check currency other', async () => {
+    const element = await driver.findElement(By.partialLinkText('£'));
+    assert(await element.isDisplayed(), 'Element is not displayed');
+})
+```
+
+<ThumbWarningAlert>
+    Selenium requiert de se rendre sur une page appartenant au même domaine que le cookie pour pouvoir le créer/modifier.
+    La [documentation](https://www.selenium.dev/documentation/webdriver/interactions/cookies/) recommande de se rendre sur une page 404 pour y accéder rapidement.
+</ThumbWarningAlert>
+
+<ThumbUpAlert>
+    Il est aussi possible de configurer les cookies pour un test spécifique.
+</ThumbUpAlert>
+
+```ts
+it('Change currency', async () => {
+    await driver.get('https://electre.kereval.cloud/opencart/index.php');
+    const cookie = await driver.manage().getCookie('currency');
+    assert.strictEqual(cookie?.value, 'EUR');
+    const elements = await driver.findElements(By.linkText('£ Currency'));
+    assert.strictEqual(elements.length, 0);
+    await driver.manage().deleteAllCookies();
+    await driver.manage().addCookie({name: 'currency', value: 'GBP'})
+    await driver.navigate().refresh();
+    const element = await driver.findElement(By.partialLinkText('£'));
+    assert(await element.isDisplayed(), 'Element is not displayed');
+})
+```
+
+<ThumbUpAlert>
+    Il est possible d'obtenir un cookie spécifique avec `getCookie` ou tous ceux accessibles depuis la page avec `getCookies`.
+    De même, il est possible supprimer un cookie spécifique avec `deleteCookie` ou tous ceux accessibles depuis la page avec `deleteAllCookies`.
+</ThumbUpAlert>
