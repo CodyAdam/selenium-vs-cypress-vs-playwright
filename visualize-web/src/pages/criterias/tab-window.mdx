@@ -12,12 +12,12 @@ import ThumbInfoAlert from '../../components/ThumbInfoAlert.astro'
 
 # Définition
 
-La gestion des onglets et fenêtres consiste à pouvoir librement naviguer entre les onglets et fenêtres ouvertes par le navigateur.
+La gestion des onglets et fenêtres consiste à pouvoir librement naviguer dans le navigateur, mpême en cas de redirection vers un nouvel onglet ou de l'ouverture d'une nouvelle fenêtre.
 
 # Scénario de test
 
-- The Internet : Ouvrir un nouvel onglet et revenir sur l'onglet précédent
-- Alapanme github.io : Ouvrir une nouvelle fenêtre et revenir sur la fenêtre précédente
+- [The Internet](https://the-internet.herokuapp.com/windows) : Ouvrir un nouvel onglet et revenir sur l'onglet précédent
+- [Alapanme github.io](https://alapanme.github.io/testing-cypress.html) : Ouvrir une nouvelle fenêtre et revenir sur la fenêtre précédente
 
 # Cypress
 
@@ -40,8 +40,8 @@ it('Open new tab', () => {
 ```
 
 <ThumbDownAlert>
-    La gestion des fenêtre ouvertes par un autre moyen n'est pas aussi simple, l'utilisateur Alapan proposait une solution sur [son site](https://testersdock.com/cypress-new-window/) mais elle est plutôt convoluée, et marquée comme dépréciée avec la version courante de Cypress.
-    De plus la solution ne semblait fonctionner qu'avec des liens statiques.
+    La gestion des fenêtres ouvertes par un autre moyen n'est pas aussi simple, l'utilisateur Alapan proposait une solution sur [son site](https://testersdock.com/cypress-new-window/), mais elle est plutôt convolutée et marquée comme dépréciée avec la version courante de Cypress.
+    De plus, la solution ne semble fonctionner qu'avec des liens statiques.
 </ThumbDownAlert>
 
 
@@ -124,7 +124,7 @@ it('Open new tab', async () => {
 </ThumbUpAlert>
 
 <ThumbDownAlert>
-    Contrairement à Playwright, il n'est pas possible d'accéder à  plusieurs fenêtres en même temps, il est nécessaire de changer de fenêtre avec l'objet `driver` à chaque fois.
+    Contrairement à Playwright, il n'est pas possible d'accéder à plusieurs fenêtres en même temps, il est nécessaire de changer de fenêtre avec l'objet `driver` à chaque fois.
     Il est aussi important d'attendre que les onglets/fenêtres soient bien ouverts avant de les utiliser.
 </ThumbDownAlert>
 
