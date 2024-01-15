@@ -14,10 +14,15 @@ import ThumbInfoAlert from '../../components/ThumbInfoAlert.astro'
 
 La gestion des onglets et fenêtres consiste à pouvoir librement naviguer dans le navigateur, mpême en cas de redirection vers un nouvel onglet ou de l'ouverture d'une nouvelle fenêtre.
 
+# Critères d'évaluation
+
+- Intégration de la gestion des onglets et fenêtres dans le framework
+- Facilité d'utilisation
+
 # Scénario de test
 
-- [The Internet](https://the-internet.herokuapp.com/windows) : Ouvrir un nouvel onglet et revenir sur l'onglet précédent
-- [Alapanme github.io](https://alapanme.github.io/testing-cypress.html) : Ouvrir une nouvelle fenêtre et revenir sur la fenêtre précédente
+- [The Internet](https://the-internet.herokuapp.com/windows) : Ouvrir un nouvel onglet, y accéder, et revenir sur l'onglet précédent
+- [Alapanme github.io](https://alapanme.github.io/testing-cypress.html) : Ouvrir une nouvelle fenêtre, y accéder, et revenir sur la fenêtre précédente
 
 # Cypress
 
@@ -48,7 +53,7 @@ it('Open new tab', () => {
 # Playwright
 
 <ThumbUpAlert>
-    Playwright permet de facilement gérer les onglets et fenêtres grâce à l'objet `contexte`.
+    Playwright permet de facilement gérer les onglets et fenêtres grâce à l'objet `context`.
 </ThumbUpAlert>
 
 ```ts
@@ -131,3 +136,9 @@ it('Open new tab', async () => {
 <ThumbInfoAlert>
     Pour être sûr de réinitialiser les fenêtres avant chaque test, il est préférable d'initialiser le driver dans la méthode `beforeEach` plutôt que dans la méthode `before`.
 </ThumbInfoAlert>
+
+# Conclusion
+
+Cypress n'est pas prévu pour gérer ce genre de cas, il y a beau avoir des solutions de contournement, elles ne sont pas optimales et ne fonctionnent pas dans tous les cas. Il obtient donc la note de 1/5.
+Playwright et Selenium sont tous les deux capables de gérer les onglets et fenêtres, mais Selenium est plus compliqué à utiliser, et limite l'accès à un seul onglet/fenêtre à la fois.
+Playwright obtient donc la note de 5/5, et Selenium la note de 4/5.

@@ -16,6 +16,11 @@ import ThumbInfoAlert from '../../components/ThumbInfoAlert.astro'
 Le Setup consiste en la configuration de l'environnement de test avant leur exécution. Il y a deux types de Setup : avant tous les tests et avant chaque test.
 Le Teardown consiste au contraire en la réinitialisation de l'environnement de test après leur exécution. Il y en a également deux types : après chaque test et après tous les tests.
 
+# Critères d'évaluation
+
+- Intégration au framework du Setup et du Teardown
+- Facilité d'utilisation
+
 # Scénario de test
 ## [Opencart](https://electre.kereval.cloud/opencart/index.php):
 ### Avant tous les tests
@@ -182,3 +187,8 @@ after(async () => {
 <ThumbDownAlert>
     Une fois le driver détruit, il n'est plus possible de continuer la navigation manuellement comme avec Cypress.
 </ThumbDownAlert>
+
+# Conclusion
+
+Les trois frameworks ont une très bonne gestion du Setup et du Teardown, bien que pour Selenium une dépendence supplémentaire soir requise, elle s'intègre très bien et ne pose donc pas de problème.
+Cypress étant à avoir l'avantage de proposer de continuer la navigation après l'exécution des tests pour faciliter le débug et encourager le développement par les tests, il mérite seul la note de 5/5, les deux autres frameworks se contentant d'un 4/5.
