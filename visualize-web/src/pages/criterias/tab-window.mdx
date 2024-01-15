@@ -12,12 +12,17 @@ import ThumbInfoAlert from '../../components/ThumbInfoAlert.astro'
 
 # Définition
 
-La gestion des onglets et fenêtres consiste à pouvoir librement naviguer entre les onglets et fenêtres ouvertes par le navigateur.
+La gestion des onglets et fenêtres consiste à pouvoir librement naviguer dans le navigateur, mpême en cas de redirection vers un nouvel onglet ou de l'ouverture d'une nouvelle fenêtre.
+
+# Critères d'évaluation
+
+- Intégration de la gestion des onglets et fenêtres dans le framework
+- Facilité d'utilisation
 
 # Scénario de test
 
-- The Internet : Ouvrir un nouvel onglet et revenir sur l'onglet précédent
-- Alapanme github.io : Ouvrir une nouvelle fenêtre et revenir sur la fenêtre précédente
+- [The Internet](https://the-internet.herokuapp.com/windows) : Ouvrir un nouvel onglet, y accéder, et revenir sur l'onglet précédent
+- [Alapanme github.io](https://alapanme.github.io/testing-cypress.html) : Ouvrir une nouvelle fenêtre, y accéder, et revenir sur la fenêtre précédente
 
 # Cypress
 
@@ -40,15 +45,15 @@ it('Open new tab', () => {
 ```
 
 <ThumbDownAlert>
-    La gestion des fenêtre ouvertes par un autre moyen n'est pas aussi simple, l'utilisateur Alapan proposait une solution sur [son site](https://testersdock.com/cypress-new-window/) mais elle est plutôt convoluée, et marquée comme dépréciée avec la version courante de Cypress.
-    De plus la solution ne semblait fonctionner qu'avec des liens statiques.
+    La gestion des fenêtres ouvertes par un autre moyen n'est pas aussi simple, l'utilisateur Alapan proposait une solution sur [son site](https://testersdock.com/cypress-new-window/), mais elle est plutôt convolutée et marquée comme dépréciée avec la version courante de Cypress.
+    De plus, la solution ne semble fonctionner qu'avec des liens statiques.
 </ThumbDownAlert>
 
 
 # Playwright
 
 <ThumbUpAlert>
-    Playwright permet de facilement gérer les onglets et fenêtres grâce à l'objet `contexte`.
+    Playwright permet de facilement gérer les onglets et fenêtres grâce à l'objet `context`.
 </ThumbUpAlert>
 
 ```ts
@@ -124,10 +129,16 @@ it('Open new tab', async () => {
 </ThumbUpAlert>
 
 <ThumbDownAlert>
-    Contrairement à Playwright, il n'est pas possible d'accéder à  plusieurs fenêtres en même temps, il est nécessaire de changer de fenêtre avec l'objet `driver` à chaque fois.
+    Contrairement à Playwright, il n'est pas possible d'accéder à plusieurs fenêtres en même temps, il est nécessaire de changer de fenêtre avec l'objet `driver` à chaque fois.
     Il est aussi important d'attendre que les onglets/fenêtres soient bien ouverts avant de les utiliser.
 </ThumbDownAlert>
 
 <ThumbInfoAlert>
     Pour être sûr de réinitialiser les fenêtres avant chaque test, il est préférable d'initialiser le driver dans la méthode `beforeEach` plutôt que dans la méthode `before`.
 </ThumbInfoAlert>
+
+# Conclusion
+
+Cypress n'est pas prévu pour gérer ce genre de cas, il y a beau avoir des solutions de contournement, elles ne sont pas optimales et ne fonctionnent pas dans tous les cas. Il obtient donc la note de 1/5.
+Playwright et Selenium sont tous les deux capables de gérer les onglets et fenêtres, mais Selenium est plus compliqué à utiliser, et limite l'accès à un seul onglet/fenêtre à la fois.
+Playwright obtient donc la note de 5/5, et Selenium la note de 4/5.
