@@ -25,7 +25,7 @@ Le Fluent Page Object Model est une variante du Page Object Model qui utilise le
 # Cypress
 
 <ThumbUpAlert>
-    Cypress utilise une API synchrone, le chainage de méthodes est donc naturellement possible.
+    Cypress utilise une API synchrone, le chaînage de méthodes est donc naturellement possible.
 </ThumbUpAlert>
 
 Afin de convertir notre Page Object Model en Fluent Page Object Model, il suffit de remplacer les méthodes de notre Page Object Model par des méthodes qui retournent `this`.
@@ -91,7 +91,7 @@ test('should add new todo', async ({ page }) => {
 # Selenium
 
 <ThumbDownAlert>
-    Selenium utilise une API asynchrone, le chainage de méthodes n'est donc pas aussi naturel qu'avec Cypress puisque les méthodes retournent une promesse.
+    Selenium utilise une API asynchrone, le chaînage de méthodes n'est donc pas aussi naturel qu'avec Cypress puisque les méthodes retournent une promesse.
 </ThumbDownAlert>
 
 ```ts
@@ -119,5 +119,5 @@ it("should add new todo", async () => {
 ```
 
 <ThumbUpAlert>
-    Contraiement à Playwright, il n'est pas nécessaire d'utiliser `await` avant l'appel des méthodes puisque le driver n'est pas détruit.
+    Contrairement à Playwright, il n'est pas nécessaire d'utiliser `await` avant l'appel des méthodes puisque le driver n'est pas détruit.
 </ThumbUpAlert>
