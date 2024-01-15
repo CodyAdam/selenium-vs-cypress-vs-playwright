@@ -13,11 +13,11 @@ import ThumbInfoAlert from '../../components/ThumbInfoAlert.astro'
 
 # Définition
 
-Le Setup consiste en la configuration de l'environnement de test avant leur exécution. Il y a deux types de Setup : avant tous les tests et avant chaque test.
-Le Teardown consiste au contraire en la réinitialisation de l'environnement de test après leur exécution. Il y en a également deux types : après chaque test et après tous les tests.
+Le Setup consiste en la configuration de l'environnement de test avant leur exécution. Il y a deux types de Setup : avant tous les tests et avant chaque test.
+Le Teardown consiste au contraire en la réinitialisation de l'environnement de test après leur exécution. Il y en a également deux types : après chaque test et après tous les tests.
 
 # Scénario de test
-## Opencart:
+## [Opencart](https://electre.kereval.cloud/opencart/index.php):
 ### Avant tous les tests
 Login > Ajout d'un iPhone au panier > Logout
 
@@ -41,7 +41,7 @@ Login > Suppression de l'iPhone du panier > Logout
     Cypress met à disposition les méthodes `before` et `beforeEach`, ainsi que `after` et `afterEach` de Mocha respectivement pour le Setup et le Teardown.
 </ThumbUpAlert>
 
-Après avoir écrit des fonctions auxiliaires chargées du login et du logout pour éviter la duplication de code, on peut utiliser les méthodes de la manière suivante :
+Après avoir écrit des fonctions auxiliaires chargées du login et du logout pour éviter la duplication de code, on peut utiliser les méthodes de la manière suivante :
 
 ```ts
 before(() => {
@@ -72,11 +72,11 @@ after(() => {
 
 <ThumbWarningAlert>
     Bien que Cypress mette à disposition les méthodes `after` et `afterEach`, dans ses [bonnes pratiques](https://docs.cypress.io/guides/references/best-practices#Using-after-Or-afterEach-Hooks)
-    il est recommandé d'effectuer le Teardown avant même le setup, afin qu'il soit toujours exécuté, même en cas d'interruption des tests.
+    il est recommandé d'effectuer le Teardown avant même le setup (de commencer le setup par ce qu'on ferait dans le teardown), afin qu'il soit toujours exécuté, même en cas d'interruption des tests.
 </ThumbWarningAlert>
 
 <ThumbUpAlert>
-    Cypress permet de continuer la navigation manuellement après l'exécution des tests, tout en conservant le contexte de la page. Cela encourage au développement par les tests, et facilite leur débuggage.
+    Cypress permet de continuer la navigation manuellement après l'exécution des tests, tout en conservant le contexte de la page. Cela encourage au développement par les tests et facilite leur débug.
 </ThumbUpAlert>
 
 
@@ -86,7 +86,7 @@ after(() => {
     Playwright met à disposition les méthodes `beforeAll` et `beforeEach`, ainsi que `afterAll` et `afterEach` de Jest respectivement pour le Setup et le Teardown.
 </ThumbUpAlert>
 
-Après avoir écrit des fonctions auxiliaires chargées du login et du logout pour éviter la duplication de code, on peut utiliser les méthodes de la manière suivante :
+Après avoir écrit des fonctions auxiliaires chargées du login et du logout pour éviter la duplication de code, on peut utiliser les méthodes de la manière suivante :
 
 ```ts
 test.beforeAll(async ({browser}) => {
@@ -121,7 +121,7 @@ test.afterAll(async ({browser}) => {
 ```
 
 <ThumbDownAlert>
-    Contraiement à Cypress, Playwright ne permet pas de continuer la navigation manuellement après l'exécution des tests, ce qui rend le débuggage plus difficile.
+    Contrairement à Cypress, Playwright ne permet pas de continuer la navigation manuellement après l'exécution des tests, ce qui rend le débug plus difficile.
 </ThumbDownAlert>
 
 # Selenium
@@ -133,7 +133,7 @@ test.afterAll(async ({browser}) => {
     Il est cependant possible d'installer Mocha ou Jest pour en bénéficier.
 </ThumbUpAlert>
 
-Après avoir écrit des fonctions auxiliaires chargées du login et du logout pour éviter la duplication de code, on peut utiliser par exemple utiliser les méthodes de Mocha de la manière suivante :
+Après avoir écrit des fonctions auxiliaires chargées du login et du logout pour éviter la duplication de code, on peut utiliser les méthodes de Mocha de la manière suivante :
 
 ```ts
 before(async () => {

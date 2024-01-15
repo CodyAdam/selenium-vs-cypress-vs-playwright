@@ -12,11 +12,11 @@ import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
 
 # Définition
 
-La gestion des cookies consiste à conserver les valeurs des cookies entre les tests. Cela permet de ne pas avoir à se reconnecter à chaque test, ou à reconfigurer les préférences du site.
+La gestion des cookies consiste à conserver leurs valeurs entre les tests. Cela permet, par exemple, de ne pas avoir à se reconnecter à chaque test ou à reconfigurer les préférences du site.
 
 # Scénario de test
 
-- Opencart : changer la devise
+- [Opencart](https://electre.kereval.cloud/opencart/index.php) : changer la devise
 
 # Cypress
 
@@ -24,9 +24,15 @@ La gestion des cookies consiste à conserver les valeurs des cookies entre les t
     Cypress supprime par défaut les cookies et le contenu des stockages local et de session avant chaque test, pour garantir leur isolation. Il est cependant possible d'utiliser la méthode `session` pour attribuer un identifiant à une session, et la restaurer à chaque appel de la méthode avec le même identifiant.
 </ThumbUpAlert>
 
-Il est possible de définir une commande personnalisée pour changer la devise dans le fichier `cypress/support/commands.ts` :
+Il est possible de définir une commande personnalisée pour changer la devise dans le fichier `cypress/support/commands.ts` :
 
 ```ts
+declare namespace Cypress {
+    interface Chainable {
+        useCurrency(currency: 'EUR'|'GBP'|'USD'): void
+    }
+}
+
 Cypress.Commands.add('useCurrency', (currency) => {
     cy.session(currency, () => {
         cy.visit('https://electre.kereval.cloud/opencart/index.php')
@@ -46,7 +52,7 @@ Cypress.Commands.add('useCurrency', (currency) => {
 })
 ```
 
-On peut ensuite utiliser cette commande dans les tests :
+On peut ensuite utiliser cette commande dans les tests :
 
 ```ts
 beforeEach(() => {
@@ -63,7 +69,7 @@ it('Check currency other', () => {
 })
 ```
 <ThumbUpAlert>
-    Si la valeur des cookies n'est importante que pour un seul test, on peut utiliser des méthodes telles que `clearCookie`, `setCookie` et `getCookie` pour y accéder :
+    Si la valeur des cookies n'est importante que pour un seul test, on peut utiliser des méthodes telles que `clearCookie`, `setCookie` et `getCookie` pour y accéder :
 </ThumbUpAlert>
 
 ```ts
@@ -79,13 +85,13 @@ it('Change currency', () => {
 ```
 <ThumbUpAlert>
     Il est possible d'obtenir un cookie spécifique pour un domaine avec `getCookie`, tous les cookies pour un domaine avec `getCookies` ou tous les cookies du navigateur avec `getAllCookies`.
-    De même, il est possible supprimer un cookie spécifique avec `clearCookie`, tous les cookies pour un domaine avec `clearCookies` ou tous les cookies du navigateur avec `clearAllCookies`.
+    De même, il est possible de supprimer un cookie spécifique avec `clearCookie`, tous les cookies pour un domaine avec `clearCookies` ou tous les cookies du navigateur avec `clearAllCookies`.
 </ThumbUpAlert>
 
 # Playwright
 
 <ThumbUpAlert>
-    Playwright rend possible la configuration des cookies depuis objet contexte, accessible depuis la méthode `beforeEach`.
+    Playwright rend possible la configuration des cookies depuis l'objet contexte, accessible depuis la méthode `beforeEach`.
 </ThumbUpAlert>
 
 ```ts
@@ -106,7 +112,7 @@ test('Check currency other', async ({ page }) => {
 ```
 
 <ThumbUpAlert>
-    L'objet context est aussi accessible depuis les tests, ce qui permet de modifier leur valeur pour un test spécifique.
+    L'objet `context` est aussi accessible depuis les tests, ce qui permet de modifier leur valeur pour un test spécifique.
 </ThumbUpAlert>
 
 ```ts
@@ -178,5 +184,5 @@ it('Change currency', async () => {
 
 <ThumbUpAlert>
     Il est possible d'obtenir un cookie spécifique avec `getCookie` ou tous ceux accessibles depuis la page avec `getCookies`.
-    De même, il est possible supprimer un cookie spécifique avec `deleteCookie` ou tous ceux accessibles depuis la page avec `deleteAllCookies`.
+    De même, il est possible de supprimer un cookie spécifique avec `deleteCookie` ou tous ceux accessibles depuis la page avec `deleteAllCookies`.
 </ThumbUpAlert>
