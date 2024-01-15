@@ -56,6 +56,24 @@ Cypress.on('test:before:run', () => {
 
 En remplaçant `<locale>` par la locale souhaitée (par exemple `fr-FR`).
 
+# Playwright
+
+<ThumbUpAlert>
+    Playwright permet de modifier la langue et la timezone du navigateur, très facilement, et pour tous les navigateurs.
+</ThumbUpAlert>
+
+Pour ce faire, il suffit de créer un nouveau contexte avec les options `locale` et `timezoneId` :
+
+```ts
+test('<...>', async ({ browser }) => {
+    const context = await browser.newContext({
+        timezoneId: 'Antarctica/Troll',
+        locale: 'fr-FR'
+    });
+    const page = await context.newPage();
+    // ...
+});
+```
 
 
 # Selenium
@@ -88,22 +106,3 @@ options.addArguments('--lang=fr');
 ```
 
 Cependant, nous n'avons pas réussi à faire fonctionner cette solution.
-
-# Playwright
-
-<ThumbUpAlert>
-    Playwright permet de modifier la langue et la timezone du navigateur, très facilement, et pour tous les navigateurs.
-</ThumbUpAlert>
-
-Pour ce faire, il suffit de créer un nouveau contexte avec les options `locale` et `timezoneId` :
-
-```ts
-test('<...>', async ({ browser }) => {
-    const context = await browser.newContext({
-        timezoneId: 'Antarctica/Troll',
-        locale: 'fr-FR'
-    });
-    const page = await context.newPage();
-    // ...
-});
-```
