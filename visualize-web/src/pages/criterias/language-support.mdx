@@ -1,0 +1,50 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Language Support 
+selenium: 5
+cypress: 1
+playwright: 4
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+# Définition
+
+La comparaison des frameworks de test en termes de langage supporté se concentre sur la capacité de chaque outil à travailler avec différents langages de programmation.
+
+# Critères d'Évaluation
+- **Polyvalence des Langages:** Évalue la variété des langages pris en charge par chaque framework.
+- **Intégration Facile:** Considère la facilité d'intégration du framework avec des langages populaires.
+- **Support Actif:** Évalue la vigueur du support continu pour les langages spécifiques.
+
+# Selenium
+<ThumbUpAlert>
+    Selenium est une suite d'outils polyvalente, prenant en charge une gamme étendue de langages tels que Java, Python, C#, Ruby, et JavaScript. L'intégration est généralement facile, et la documentation complète assure un support actif.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+    Bien que Selenium soit polyvalent, ses rapports détaillés peuvent nécessiter des intégrations tierces, ajoutant potentiellement de la complexité.
+</ThumbDownAlert>
+
+# Cypress
+<ThumbUpAlert>
+    Cypress offre une intégration facile avec JavaScript, et sa documentation complète assure un support actif pour ce langage.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+    Cypress est spécifiquement orienté vers JavaScript, limitant sa polyvalence par rapport à d'autres frameworks. L'intégration native avec Mocha permet une personnalisation, mais la portée se limite principalement à JavaScript.
+</ThumbDownAlert>
+
+
+# Playwright
+<ThumbUpAlert>
+    Playwright se distingue par son support étendu pour plusieurs langages, dont Python, Java, JavaScript, et .Net. Cette polyvalence offre une grande flexibilité aux équipes de test.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+    Bien que Playwright soit polyvalent, certains utilisateurs regrettent que son rapport HTML ne soit pas aussi intuitif que celui de Cypress.
+</ThumbDownAlert>
+
+

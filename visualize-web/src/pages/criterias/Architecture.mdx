@@ -1,0 +1,77 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Architecture
+selenium: 3
+cypress: 5
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+
+# Définition
+L'architecture fait référence à la structure , l'organisation et aux interactions de divers composants au sein d'un cadre logiciel.
+
+# Critères d'Évaluation
+- **Performances :** Temps d'exécution des opérations, gestion de la mémoire et des ressources ,scalabilité : capacité à évoluer avec l'augmentation de la charge.
+- **Fiabilité et tolérance aux pannes:** Gestion des erreurs et des exceptions, capacité à récupérer après des pannes, tolérance aux fautes et capacité à maintenir des opérations critiques.
+- **Modularité:** Degré de découpage en modules indépendants, facilité d'ajout, de suppression ou de remplacement de modules, réutilisabilité des composants.
+- **Maintenabilité:** Facilité de compréhension du code source, Documentation exhaustive, Convivialité pour les développeurs.
+- **Interopérabilité:** Capacité à fonctionner avec d'autres systèmes, Prise en charge des standards et des protocoles.
+
+# Selenium
+Le protocole JSON Wire a été supprimé dans Selenium 4 au profit du protocole W3C WebDriver, qui est désormais la norme officielle pour contrôler les navigateurs Web. Néanmoins, l'équipe Selenium continue de prendre en charge le protocole obsolète, ce qui peut être effectué via les liaisons de langage prises en charge par Selenium et Selenium Server.Le nouveau protocole s'appelle « WebDriver W3C ». Il a acquis l'acceptation du « World Wide Web Consortium » (W3C). Dans l'architecture Selenium 4, nous pouvons voir une communication directe entre le client et le serveur sans avoir besoin du protocole JSON Wire. Le même protocole est utilisé par Selenium WebDriver et les navigateurs Web, ce qui rend l'exécution des scénarios de test rapide et extrêmement faible.    L’utilisation du protocole WebDriver W3C présente plusieurs avantages. Le protocole WebDriver W3C est plus riche que le protocole JSON Wire. L'API Actions a été réorganisée pour fonctionner avec la spécification WebDriver. Les API d'action vous permettraient désormais d'effectuer des actions multi-touch, de zoomer, de dézoomer, d'appuyer sur deux touches simultanément, et bien plus encore.
+Par exemple, la séquence Pinch-zoom dans le protocole W3C est représentée par une séquence d'actions composée de trois ticks et de dispositifs à deux pointeurs de type tactile.
+
+<ThumbUpAlert>
+Souple, avec de nombreuses bibliothèques et intégrations tierces.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+ le maintien du support pour le protocole obsolète peut ajouter une certaine complexité.
+</ThumbDownAlert>
+
+<ThumbDownAlert>
+robuste mais la tolérance aux pannes peut dépendre du navigateur et des configurations.
+</ThumbDownAlert>
+
+# Cypress
+Cypress possède une architecture unique conçue pour rendre les tests plus rapides et plus fiables.                                                              
+Dans les tests Cypress UI , toutes les commandes sont exécutées dans le navigateur sans aucune dépendance aux binaires du pilote. Dans la capture d'écran ci-dessous, vous pouvez voir que les tests sont exécutés dans le navigateur, de sorte que l'exécution des tests est plus rapide sans aucun retard du réseau.Il existe un serveur Node derrière Cypress et le processus Node communique, se synchronise et effectue en permanence des tâches les uns pour les autres. Le serveur Node et le navigateur communiquent via WebSocket, qui démarre une fois le proxy créé.
+
+<ThumbUpAlert>
+Cypress possède une architecture unique qui exécute toutes les commandes directement dans le navigateur, éliminant les dépendances aux binaires du pilote.
+</ThumbUpAlert>
+
+<ThumbUpAlert>
+Les tests s'exécutent directement dans le navigateur, éliminant le besoin de binaires du pilote, ce qui peut entraîner une exécution rapide.
+</ThumbUpAlert>
+
+<ThumbUpAlert>
+Les tests s'exécutent dans le navigateur, garantissant une exécution rapide sans retard du réseau.
+</ThumbUpAlert>
+
+<ThumbUpAlert>
+Possède des mécanismes de récupération intégrés et peut gérer les pannes dans le navigateur.
+</ThumbUpAlert>
+
+# Playwright
+Playwright fonctionne directement avec le WebSocket, ce qui signifie qu'une fois le test déclenché, le code sera converti au format JSON et sera envoyé au serveur via le protocole Web socket. Une fois la connexion ou la connexion de handshake établie, les commandes sont envoyées entre votre test et le serveur Playwright.
+Les connexions client et serveur resteront actives jusqu'à ce que l'une ou les deux parties les interrompent. Après avoir fermé la connexion, la connexion est terminée aux deux extrémités. L'une des raisons pour lesquelles Playwright est rapide est que la connexion reste active tant qu'aucune des parties n'y met fin.
+
+<ThumbUpAlert>
+Communication via WebSocket: Playwright utilise directement le WebSocket, assurant une communication rapide et efficace. La connexion active jusqu'à la fin des parties contribue à la rapidité.
+</ThumbUpAlert>
+
+<ThumbUpAlert>
+Conçu pour être tolérant aux pannes avec la communication WebSocket stable.
+</ThumbUpAlert>
+
+<ThumbUpAlert>
+Offre une API modulaire et permet la réutilisation de composants.
+</ThumbUpAlert>
+
+
+
