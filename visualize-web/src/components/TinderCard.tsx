@@ -66,6 +66,8 @@ export default function TinderCardWrapper(props: TinderCardWrapperProps) {
   (Criteria & {direction: string})[]
   >([]);
 
+  const [displayTutorial, setDisplayTutorial] = useState(true);
+
   // compute results
   const results = useMemo(() => {
     let results = {
@@ -140,7 +142,7 @@ export default function TinderCardWrapper(props: TinderCardWrapperProps) {
 
 
     return (
-      <div className="w-full h-full flex flex-col p-12 gap-12">
+      <div className="w-full h-full flex flex-col p-12 gap-12 overflow-x-hidden">
         <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
           <div className="bg-yellow-400 h-2.5 rounded-full" style={
             {width: `${(swipedCards.length / props.criteria.length) * 100}%`}
@@ -190,12 +192,51 @@ export default function TinderCardWrapper(props: TinderCardWrapperProps) {
         }></div>
       </div>
 
+
+
       <div className="relative grow">
+
+        {displayTutorial && (
+          <div
+            className="absolute w-full h-full top-0 right-0 z-10 bg-white/50 rounded-3xl overflow-hidden backdrop-blur-xl">
+            <div className="h-1/2 border-b-8 border-gray-500 border-dotted flex items-center justify-center flex-col">
+              <IcBaselineKeyboardDoubleArrowUp
+                className="h-12 fill-gray-700 animate-pulse"></IcBaselineKeyboardDoubleArrowUp>
+              <div className="text-3xl font-bold text-gray-700">Neutre</div>
+            </div>
+            <div className="grid grid-cols-2 h-1/2">
+              <div className="border-r-8 border-r-gray-500 border-dotted flex items-center justify-center flex-col">
+                <IcBaselineKeyboardDoubleArrowUp
+                  className="h-12 fill-gray-700 -rotate-90 animate-pulse"></IcBaselineKeyboardDoubleArrowUp>
+                <div className="text-3xl font-bold text-gray-700">Pas important</div>
+              </div>
+              <div className="flex items-center justify-center flex-col text-gray-700">
+                <IcBaselineKeyboardDoubleArrowUp
+                  className="h-12 rotate-90 animate-pulse fill-current"></IcBaselineKeyboardDoubleArrowUp>
+                <div className="text-3xl font-bold">Très important</div>
+              </div>
+            </div>
+
+            <div className="absolute w-full h-full flex items-center justify-center top-0 right-0">
+              <button
+                onClick={() => setDisplayTutorial(false)}
+                className="bg-green-500 p-4 rounded-full shadow-2xl hover:scale-105 transition-all text-white">
+                <MaterialSymbolsNotStarted className="h-24"></MaterialSymbolsNotStarted>
+              </button>
+            </div>
+          </div>
+        )}
+
+
         {props.criteria.map((criteria) => (
           <TinderCard
+            onSwipeRequirementUnfulfilled={() => {
+              console.log("onSwipeRequirementUnfulfilled");
+            }}
             onSwipe={(dir) => handleSwipe(dir, criteria)}
-            className="absolute bg-yellow-400 p-12 h-full w-full cursor-grab rounded-3xl" key={criteria.title}>
-            <div className="absolute h-full w-full flex flex-col justify-end top-0 right-0 p-12">
+            className="absolute bg-yellow-400 h-full w-full cursor-grab rounded-3xl" key={criteria.title}>
+            <div className="absolute h-full w-full flex flex-col justify-end top-0 right-0 p-12 select-none">
+              <img draggable={false} className="select-none h-full object-cover overflow-hidden" src={`https://doodleipsum.com/700/abstract?n=${criteria.title}`} alt=""/>
               <h2 className="font-bold text-5xl">{criteria.title}</h2>
             </div>
           </TinderCard>
@@ -258,5 +299,20 @@ export function IonHeartDislike(props: SVGProps<SVGSVGElement>) {
 export function ZondiconsMoodNeutralSolid(props: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" {...props}><path d="M10 20a10 10 0 1 1 0-20a10 10 0 0 1 0 20M6.5 9a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3m7 0a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3M7 13a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2z"></path></svg>
+  )
+}
+
+
+export function IcBaselineKeyboardDoubleArrowUp(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}><path d="M6 17.59L7.41 19L12 14.42L16.59 19L18 17.59l-6-6z"></path><path d="m6 11l1.41 1.41L12 7.83l4.59 4.58L18 11l-6-6z"></path></svg>
+  )
+}
+
+
+
+export function MaterialSymbolsNotStarted(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}><path fill="currentColor" d="M8 16h2V8H8zm4 0l6-4l-6-4zm0 6q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22"></path></svg>
   )
 }
