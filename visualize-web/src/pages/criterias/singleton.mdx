@@ -66,24 +66,24 @@ export class DatabaseSingleton {
 }
 ```
 
-The implementation of the Singleton is fairly straightforward and will be the same for all the frameworks.
+L'implémentation du Singleton est assez simple et sera la même pour tous les frameworks.
 
-We can get the instance of the Singleton by calling `DatabaseSingleton.getInstance()`. This will return the instance of the Singleton. If the instance does not exist, it will create a new instance and return it.
+Nous pouvons obtenir l'instance du Singleton en appelant `DatabaseSingleton.getInstance()`. Ceci retournera l'instance du Singleton. Si l'instance n'existe pas, elle créera une nouvelle instance et la retournera.
 
 # Critères d'Évaluation
 
-- Est-ce que le pattern Singleton est possible avec le framework?
-- Est-ce que le pattern Singleton est facile à implémenter avec le framework?
+- Est-ce que le pattern Singleton est possible avec le framework ?
+- Est-ce que le pattern Singleton est facile à implémenter avec le framework ?
 
 # Résultats
 
 ## Cypress & Selenium
 
-Since we are using a single instance, we have a single state that can change over time. This means that if we run the tests sequentially, the state will be preserved across tests. 
+Puisque nous utilisons une seule instance, nous avons un seul état qui peut changer au fil du temps. Cela signifie que si nous exécutons les tests séquentiellement, l'état sera préservé à travers les tests.
 
-However, if we run the tests in parallel, we can't predict the order in which the tests will run. This means that the state of the database might be unpredictable.
+Cependant, si nous exécutons les tests en parallèle, nous ne pouvons pas prédire l'ordre dans lequel les tests seront exécutés. Cela signifie que l'état de la base de données pourrait être imprévisible.
 
-Cypress (and Selenium Mocha) runs all tests sequentially, we can simply run the tests in order of declaration and expect them to pass.
+Cypress (et Selenium Mocha) exécutent tous les tests séquentiellement, nous pouvons simplement exécuter les tests dans l'ordre de déclaration et s'attendre à ce qu'ils réussissent.
 
 ```ts
 import { DatabaseSingleton } from "./fake-database";
@@ -125,18 +125,18 @@ describe("Parallel DatabaseSingleton Tests", () => {
 
 <ThumbWarningAlert>
   <p>
-    Playwright runs tests in parallel by default. This means that the state of the database might be unpredictable for our scenario. This is not good or bad, it simply means that we need to be aware of this when writing our tests.
+    Playwright exécute les tests en parallèle par défaut. Cela signifie que l'état de la base de données pourrait être imprévisible pour notre scénario. Ce n'est ni bon ni mauvais, cela signifie simplement que nous devons en être conscients lors de la rédaction de nos tests.
   </p>
 </ThumbWarningAlert>
 
-To run the tests sequentially, we can use the `--workers=1` flag. This will run the tests sequentially and we can expect the tests to pass.
+Pour exécuter les tests séquentiellement, nous pouvons utiliser le drapeau `--workers=1`. Cela exécutera les tests de manière séquentielle et nous pouvons nous attendre à ce que les tests réussissent.
 
-This will not pass the following test because of the parallel execution. `npx playwright test`.
-Running the tests sequentially will pass the test. `npx playwright test --workers=1`.
+Cela ne passera pas le test suivant en raison de l'exécution parallèle. `npx playwright test`.
+Exécuter les tests de manière séquentielle permettra de réussir le test. `npx playwright test --workers=1`.
 
 <ThumbWarningAlert>
   <p>
-    Remeber that this is only pertinent for our scenario. In an other scenario, the Singleton might be used differently and might not be affected by parallel execution.
+    Souvenez-vous que cela n'est pertinent que pour notre scénario. Dans un autre scénario, le Singleton pourrait être utilisé différemment et pourrait ne pas être affecté par l'exécution parallèle.
   </p>
 </ThumbWarningAlert>
 
