@@ -1,0 +1,78 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Parallel Testing
+cypress: 3
+playwright: 5
+selenium: 4
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+# Définition
+
+L'exécution de tests en parallèle consiste à séparer les tests en plusieurs groupes, avec potentiellement une configuration différente par groupe, et à exécuter ces groupes de tests en même temps.
+
+# Critères d'évaluation
+
+- Disponibilité de la parallélisation
+- Facilité de configuration
+
+# Cypress
+
+<ThumbDownAlert>
+    Pour permettre la parallélisation des tests, Cypress nécessite de configurer un compte Cypress Cloud, service avec [abonnement payant](https://www.cypress.io/pricing) au delà de 500 « [résultats de test](https://docs.cypress.io/faq/questions/cloud-faq#What-counts-as-a-test-result) » par mois 
+    (chaque appel à la méthode `it` résultant en un échec ou un succès compte comme un résultat de test).
+    De plus, la parallélisation des tests est disponible uniquement en intégration continue.
+</ThumbDownAlert>
+<ThumbUpAlert>
+    Cypress utilise les historiques stockés sur Cypress Cloud pour réaliser un équilibre des charges, et ainsi profiter au maximum des ressources disponibles.
+    Il est possible de créer des groupes dans une même commande `cypress run` grâce au flag `--group` pour exécuter différentes configurations sous différejts labels
+    (bien qu'il s'y prêtent particulièrement, les groupes sont aussi utilisables sans parallélisation).
+</ThumbUpAlert>
+<ThumbWarningAlert>
+    Il est recommandé dans la documentation de ne pas lancer de tests en parallèle sur une seule machine par soucis de manque de performance.
+</ThumbWarningAlert>
+
+# Playwright
+
+<ThumbUpAlert>
+    Playwright lance les tests en parallèle par défaut. Cette parallélisation se fait via de multiples processus indépendants (workers), gérés par le runner.
+    Seuls les fichiers de tests sont répartis entre les workers, les tests au sein d'un même fichier sont exécutés séquentiellement.
+</ThumbUpAlert>
+<ThumbUpAlert>
+    Il est possible de configurer le nombre de workers, de désactiver la parallélisation, ou encore de configurer la parallélisation des tests au sein d'un fichier.
+    Pour ce dernier point, la configuration est possible individuellement pour chaque fichier, ou globalement.
+</ThumbUpAlert>
+<ThumbUpAlert>
+    Il est aussi possible d'utiliser le sharding pour répartir les tests sur plusieurs machines, et il est ensuite possible de fusionner les résultats.
+    Le sharding a une bonne compatibilité avec l'intégration continue.
+</ThumbUpAlert>
+
+# Selenium
+
+<ThumbUpAlert>
+    [Selenium Grid](https://www.selenium.dev/documentation/grid/) permet de créer un serveur s'occupant de redistribuer les tests sur plusieurs machines.
+</ThumbUpAlert>
+<ThumbDownAlert>
+    Selenium Grid nécessite java (11 ou plus récent) pour fonctionner, et peut s'avérer complexe à configurer.
+</ThumbDownAlert>
+<ThumbWarningAlert>
+    Bien que le serveur soit nécessairement en java, le client peut être dans n'importe quel langage supporté par Selenium.
+    Il faut juste s'assurer que le client communique avec le serveur. En JavaScript/TypeScript par exemple, il faut préciser l'url du serveur lors de la création du driver :
+</ThumbWarningAlert>
+```ts
+driver = await new Builder().forBrowser('chrome').usingServer('http://gridUrl:4444').build();
+```
+<ThumbUpAlert>
+    Selenium Grid peut être utilisé pour exécuter les tests en parallèle sur différents OS, navigateurs, et versions de navigateurs.
+    Il est aussi possible de l'utiliser avec un outils d'intégration continue.
+</ThumbUpAlert>
+
+# Conclusion
+
+Cypress dispose d'une fonctionnalité de parallélisation des tests, mais elle ne fonctionne que dans le cadre d'intégration continue, et est garantie de nécessiter un abonnement payant pour un usage régulier.
+La fonctionnalité étant présente, mais avec une disponibilité restreinte, et demandant de faire confiance au service Cypress Cloud, nous lui attribuons une note de 3/5.
+Playwright et Selenium disposent tous les deux de fonctionnalités de parallélisation, disponible avec ou sans intégration continue, et sans abonnement payant ni service tiers.
+Playwright ayant une configuration plus simple à mettre en place, et une meilleure compatibilité avec l'intégration continue, nous lui attribuons une note de 5/5, et Selenium une note de 4/5.
