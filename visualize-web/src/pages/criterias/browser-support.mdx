@@ -1,0 +1,106 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Browser Support 
+selenium: 5
+cypress: 5
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+
+Chromium, Firefox, et Safari couvrent 99% du marché, ce qui justifie la note de 5.
+
+# Définition
+La capacité d'un framework à rendre et fonctionner correctement sur différents navigateurs web.
+
+# Critères d'Évaluation
+- **Polyvalence des Navigateurs:** Évalue la capacité de chaque framework à prendre en charge différents navigateurs web.
+- **Compatibilité avec les Navigateurs Majeurs:** Considère la prise en charge des principaux navigateurs tels que Chromium, Firefox et Safari, qui couvrent 99% de la part de marché.
+- **Stabilité et Performance:** Évalue la stabilité et les performances du framework sur différents navigateurs.
+- **Fonctionnalités de Test Multi-Navigateur:** Considère la possibilité d'exécuter les mêmes tests sur plusieurs navigateurs sans modification majeure du code.
+- **Facilité de Configuration pour les Navigateurs:** Évalue la simplicité et l'efficacité de la configuration du framework pour travailler avec différents navigateurs.
+
+# Selenium
+<ThumbUpAlert>
+    Selenium est hautement polyvalent, prenant en charge différents navigateurs, dont Chrome, Firefox, Safari, Edge, et d'autres. Il offre une compatibilité solide avec les navigateurs majeurs, garantissant une stabilité et des performances constantes.
+</ThumbUpAlert>
+Selenium offre la possibilité d'exécuter des tests de manière "sans tête", ce qui signifie qu'ils peuvent être exécutés sans afficher physiquement une fenêtre de navigateur Web pendant le processus. Cette fonctionnalité est particulièrement utile dans les environnements automatisés où l'interaction visuelle n'est pas nécessaire.
+
+Pour utiliser Selenium avec un langage de programmation spécifique et un navigateur Web donné, vous devez installer les liaisons de langage appropriées ainsi que le pilote WebDriver correspondant. Ces composants sont essentiels pour établir une communication entre votre code de test et le navigateur cible. Ils permettent d'automatiser des actions telles que la navigation sur une page Web, le clic sur des éléments, et la saisie de texte.
+
+Exemple de selenium avec Python et le navigateur Chrome:
+
+1- Installer les liaisons Python pour Selenium : Vous aurez besoin d'installer la bibliothèque Selenium pour Python, qui fournit les méthodes et les classes nécessaires pour interagir avec Selenium.
+pip install selenium
+
+2- Télécharger le pilote Web ChromeDriver : Vous devez également télécharger le pilote ChromeDriver, qui agit comme un pont entre Selenium et le navigateur Chrome. Assurez-vous de télécharger la version compatible avec votre navigateur Chrome.
+
+    2.1- Allez sur le site officiel de ChromeDriver : ChromeDriver - WebDriver for Chrome
+    2.2- Téléchargez la version appropriée pour votre système d'exploitation.
+
+3- Configurer le chemin vers le pilote ChromeDriver : Assurez-vous que le chemin vers le pilote ChromeDriver est ajouté à votre variable d'environnement PATH ou spécifiez son emplacement dans votre script.
+ `
+ ````python    
+from selenium import webdriver
+# le chemin vers le pilote ChromeDriver
+path_to_chromedriver = '/chemin/vers/chromedriver'
+
+# Initialiser le navigateur Chrome
+driver = webdriver.Chrome(executable_path=path_to_chromedriver)
+````
+
+<ThumbDownAlert>
+    Bien que Selenium soit robuste, sa configuration pour certains navigateurs peut nécessiter des ajustements, entraînant parfois des complexités mineures.
+</ThumbDownAlert>
+
+# Cypress
+Cypress fonctionne différemment de Selenium dans la mesure où il est principalement conçu pour les tests de bout en bout sur des applications Web modernes. Pour exécuter des tests Cypress, il n'est pas nécessaire d'installer un pilote de navigateur séparé car Cypress utilise son propre moteur et s'exécute directement dans le navigateur. Cependant, vous pouvez également exécuter les tests de manière "sans tête" sans afficher l'interface graphique du navigateur.
+1- Installer Cypress : Utilisez npm (Node Package Manager) pour installer Cypress.
+````javascript
+npm install cypress
+````
+2-Installer Cypress : Utilisez npm (Node Package Manager) pour installer Cypress.
+````javascript
+npx cypress run
+````
+<ThumbUpAlert>
+    Cypress offre une excellente prise en charge des principaux navigateurs, y compris Chrome, Firefox, et Edge. Sa simplicité de configuration et son approche unique offrent une stabilité et des performances accrues.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+    Cependant, Cypress peut présenter des défis si vous avez besoin de tester sur des navigateurs moins courants, limitant ainsi sa polyvalence par rapport à Selenium.
+</ThumbDownAlert>
+
+# Playwright
+Playwright, comme Selenium, nécessite l'installation de pilotes spécifiques pour interagir avec les navigateurs. Il prend également en charge l'exécution de tests de manière "sans tête" sans l'interface graphique du navigateur.
+1- Installer Playwright : Utilisez npm pour installer Playwright.
+````javascript  
+npm install playwright
+````    
+2- Installer le pilote du navigateur : Vous devez également installer le pilote du navigateur pour le navigateur cible. Par exemple, pour utiliser Playwright avec Chrome, vous devez installer le pilote Chrome.
+````javascript
+npx playwright install
+````
+3- Configurer le chemin vers le pilote : Assurez-vous que le chemin vers le pilote du navigateur est ajouté à votre variable d'environnement PATH ou spécifiez son emplacement dans votre script.
+````javascript
+const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.launch();
+  const context = await browser.newContext({ headless: true });
+  const page = await context.newPage();
+
+  // Vos actions automatisées avec Playwright ici
+
+  await browser.close();
+})();
+````
+<ThumbUpAlert>
+    Playwright excelle dans la prise en charge multi-navigateur, offrant une compatibilité robuste avec Chrome, Firefox, Safari, et d'autres. Sa flexibilité permet une configuration aisée et une exécution stable sur différentes plates-formes de navigateurs.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+    Bien que Playwright soit polyvalent, certains utilisateurs peuvent ressentir une courbe d'apprentissage plus prononcée lors de la configuration initiale pour des navigateurs spécifiques.
+</ThumbDownAlert>
+
+

@@ -12,19 +12,25 @@ import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
 
 # Définition
 
-La gestion des téléchargements consiste à vérifier qu'un fichier téléchargé depuis le navigateur est bien présent sur le disque local, ou qu'un fichier envoyé depuis le disque local est bien reçu par le navigateur.
+La gestion des téléchargements consiste à vérifier qu'un fichier téléchargé depuis le navigateur est bien présent sur le disque local, ou qu'un fichier téléversé depuis le disque local est bien reçu par le navigateur.
+
+# Critères d'évaluation
+
+- Intégration de la gestion des téléchargements (download)
+- Intégration de la gestion des téléversements (upload)
+- Facilité d'utilisation
 
 # Scénario de test
 
-- The Internet : Télécharger (download) un fichier
-- The Internet : Télécharger (upload) un fichier avec un input file
-- The Internet : Télécharger (upload) un fichier avec un drag and drop
+- [The Internet](https://the-internet.herokuapp.com/download) : Télécharger (download) un fichier
+- [The Internet](https://the-internet.herokuapp.com/upload) : Télécharger (upload) un fichier avec un input file
+- [The Internet](https://the-internet.herokuapp.com/upload) : Télécharger (upload) un fichier avec un drag and drop
 
 # Cypress
 
 <ThumbUpAlert>
     Cypress enregistre automatiquement les fichiers téléchargés, par défaut, dans le dossier `cypress/downloads`.
-    Couplé avec le module `fs` de Node.js, il est possible de vérifier la présence d'un fichier sur le disque local.
+    Il est possible de vérifier la présence d'un fichier sur le disque local avec la méthode `readFile`.
 </ThumbUpAlert>
 
 ```ts
@@ -37,10 +43,10 @@ it('Download file', () => {
 
 <ThumbWarningAlert>
     Cypress supprime automatiquement les fichiers téléchargés à la fin de chaque test **uniquement si le test est exécuté depuis un terminal** avec `cypress run`.
-    Si le test est exécuté depuis l'interface graphique, il reste possible de définir une tâche personnalisée pour supprimer le contenu du dossier `cypress/downloads`, et ce avant chaque test pour être conforme aux bonnes pratiques de Cypress.
+    Si le test est exécuté depuis l'interface graphique, il reste possible de définir (couplé avec le module `fs` de Node.js) une tâche personnalisée pour supprimer le contenu du dossier `cypress/downloads`, et ce avant chaque test pour être conforme aux bonnes pratiques de Cypress.
 </ThumbWarningAlert>
 
-Il faut pour cela ajouter une tâche dans le fichier de configuration `cypress.config.ts` :
+Il faut pour cela ajouter une tâche dans le fichier de configuration `cypress.config.ts` :
 
 ```ts
 export default defineConfig({
@@ -59,7 +65,7 @@ export default defineConfig({
 })
 ```
 
-On peut ensuite utiliser cette tâche dans les tests :
+On peut ensuite utiliser cette tâche dans les tests :
 
 ```ts
 const downloadFolder = Cypress.config('downloadsFolder')
@@ -72,7 +78,7 @@ beforeEach(deleteDownloadFolder)
 ```
 
 <ThumbUpAlert>
-    Cypress permet de réaliser un upload de fichier facilement avec la méthode `selectFile`.
+    Cypress permet de réaliser un téléversement de fichiers facilement avec la méthode `selectFile`.
 </ThumbUpAlert>
 
 ```ts
@@ -84,7 +90,7 @@ it('Upload file', () => {
 })
 ```
 <ThumbUpAlert>
-    Pour le drag and drop il suffit simplement d'ajouter en paramètre objet `{action: 'drag-drop'}` à la méthode `selectFile`.
+    Pour le drag and drop, il suffit d'ajouter en paramètre l'objet `{action: 'drag-drop'}` à la méthode `selectFile`.
 </ThumbUpAlert>
 
 ```ts
@@ -97,14 +103,20 @@ it('Upload file with drag and drop', () => {
 ```
 
 <ThumbWarningAlert>
-    Bien que tout semble fonctionner, le site renvoie une erreur 500 lors de la soumission du formulaire dans le cas du drag and drop.
+    Bien que tout semble fonctionner, le site renvoie une erreur 500 lors de la soumission du formulaire dans le cas du drag and drop,
+    alors qu'une soumission manuelle du formulaire ne renvoie pas d'erreur.
 </ThumbWarningAlert>
 
 # Playwright
 
 <ThumbUpAlert>
     Playwright permet facilement d'intercepter les téléchargements en attendant un événement `download`.
+    Par défaut, les fichiers sont enregistrés dans un dossier temporaire (sous windows, c'est quelque part dans le dossier d'installation de Playwright).
+    Il est possible d'utiliser la méthode `createReadStream` pour vérifier la présence du fichier sur le disque local.
 </ThumbUpAlert>
+<ThumbWarningAlert>
+    La [documentation](https://playwright.dev/docs/api/class-browsertype#browser-type-launch-option-downloads-path) indique qu'il est possible de changer le dossier de téléchargement, mais où cette configuration à lieu ne nous a pas semblé clair.
+</ThumbWarningAlert>
 
 ```ts
 test('Download file', async ({ page }) => {
@@ -113,60 +125,64 @@ test('Download file', async ({ page }) => {
     await page.getByText('testFile.txt').click();
     const download = await downloadPromise;
 
-    await download.saveAs(`${__dirname}/${download.suggestedFilename()}`);
+    // await download.saveAs(`${__dirname}/${download.suggestedFilename()}`);
     await download.createReadStream()
 })
 ```
 
 <ThumbWarningAlert>
-    Le fichier est sensé être supprimé automatiquement lorsque l'objet `contexte` lié au test est détruit, mais ce n'est pas le cas.
+    Le fichier téléchargé est supprimé automatiquement à condition qu'il soit enregistré dans le dossier configuré.
 </ThumbWarningAlert>
 
 <ThumbUpAlert>
-    Playwright permet facilement d'envoyer un fichier avec la méthode `setInputFiles`.
+    Playwright permet facilement de téléverser un fichier avec la méthode `setInputFiles`.
 </ThumbUpAlert>
 
 ```ts
 test('Upload file', async ({ page }) => {
     await page.goto('https://the-internet.herokuapp.com/upload')
-    await page.setInputFiles('#file-upload', `${__dirname}/testFileU.txt`)
+    await page.setInputFiles('#file-upload', `${__dirname}/testFile.txt`)
     await page.click('#file-submit')
-    await expect(page.getByText('testFileU.txt')).toBeVisible()
+    await expect(page.getByText('testFile.txt')).toBeVisible()
 })
 ```
-
-Pour le drag and drop c'est un peu plus compliqué, il faut créer un objet `DataTransfer` et simuler l'événement `drop` sur l'élément cible.
+<ThumbWarningAlert>
+    Pour le drag and drop, c'est un peu plus compliqué, il faut créer un objet `DataTransfer` et simuler l'événement `drop` sur l'élément cible
+    (basé sur une solution proposée dans une [open issue](https://github.com/microsoft/playwright/issues/10667#issuecomment-998397241) de Playwright).
+    De plus le module `fs` de Node.js est nécessaire pour lire le fichier.
+</ThumbWarningAlert>
 
 ```ts
 test('Upload file with drag and drop', async ({ page }) => {
     await page.goto('https://the-internet.herokuapp.com/upload')
 
-    const buffer = readFileSync(`${__dirname}/testFileU.txt`)
+    const buffer = readFileSync(`${__dirname}/testFile.txt`)
 
     const dataTransfer = await page.evaluateHandle((data) => {
         const dt = new DataTransfer();
-        dt.items.add(new File([data], 'testFileU.txt'));
+        dt.items.add(new File([data], 'testFile.txt'));
         return dt;
     }, buffer);
 
     await page.dispatchEvent('#drag-drop-upload', 'drop', { dataTransfer });
     await page.click('#file-submit')
-    await expect(page.getByText('testFileU.txt')).toBeVisible()
+    await expect(page.getByText('testFile.txt')).toBeVisible()
 })
 ```
 
 <ThumbWarningAlert>
-    Bien que tout semble fonctionner, le site renvoie une erreur 500 lors de la soumission du formulaire dans le cas du drag and drop.
+    Bien que tout semble fonctionner, le site renvoie une erreur 500 lors de la soumission du formulaire dans le cas du drag and drop,
+    alors qu'une soumission manuelle du formulaire ne renvoie pas d'erreur.
 </ThumbWarningAlert>
 
 # Selenium
 
 <ThumbDownAlert>
-    Selenium ne prend pas en charge la gestion des téléchargements.
+    Selenium ne prend pas en charge la gestion des téléchargements (dans la documentation, le téléchargement de fichier est [sous la section 'Discouraged'](https://www.selenium.dev/documentation/test_practices/discouraged/file_downloads/)).
 </ThumbDownAlert>
 
 <ThumbUpAlert>
-    Il permet cependant de gérer un upload de fichier.
+    Il permet cependant de gérer un téléversement de fichiers. La méthode utilisée se contente de donner le chemin d'accès du fichier à l'élément input.
 </ThumbUpAlert>
 
 ```ts
@@ -180,5 +196,14 @@ it('File upload', async () => {
 ```
 
 <ThumbDownAlert>
-    Mais il ne gère pas le drag and drop de fichier.
+    Le téléversement par drag and drop n'est cependant pas géré.
 </ThumbDownAlert>
+<ThumbWarningAlert>
+    Un utilisateur a proposé [une solution](https://gist.github.com/florentbr/349b1ab024ca9f3de56e6bf8af2ac69e) qui semble fonctionner, mais elle est très complexe.
+</ThumbWarningAlert>
+
+# Conclusion
+
+Cypress à une très bonne intégration de la gestion des téléchargements et téléversement, ce qui lui vaut une note de 5/5.
+Playwright aussi dispose d'une bonne gestion des téléchargements et téléversements, mais la gestion des uploads par drag and drop étant un peu complexe, et la solution ayant été trouvée dans une open issue, nous lui attribuons une note de 4/5.
+Enfin Selenium ne prend pas en charge les téléchargements ; et bien que les téléversements soient facile à réaliser dans le cas d'un simple input, ils sont complexe et non documentés dans le cas d'un drag and drop. Nous lui attribuons donc une note de 2/5.

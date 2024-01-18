@@ -1,0 +1,118 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Ease of Setup
+selenium: 1
+cypress: 4
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+
+
+
+# Définition
+Cela fait référence à la simplicité et à la facilité d'installation et de configuration d'un framework logiciel.
+# Critères d'Évaluation
+- **Processus d'Installation** : Examinez la procédure d'installation du framework. Un processus simple avec des étapes claires et un minimum d'exigences préalables facilite l'adoption du framework.
+
+- **Outils d'Installation** : Certains frameworks peuvent fournir des outils spécifiques pour faciliter l'installation, tels que des gestionnaires de paquets, des installateurs graphiques, ou des scripts automatisés. La disponibilité de ces outils peut influencer la facilité d'installation.
+
+- **Dépendances et Prérequis** : Considérez les dépendances et les prérequis du framework. Moins il y a de dépendances externes ou de configurations complexes, plus le processus d'installation sera simple.
+
+- **Compatibilité avec les Environnements** : Vérifiez si le framework prend en charge plusieurs environnements (systèmes d'exploitation, versions de langages de programmation, etc.). Une compatibilité étendue facilite l'installation sur différents systèmes.
+
+# Selenium([Documentation](https://www.lambdatest.com/blog/playwright-vs-selenium-vs-cypress/))
+Pour configurer Selenium localement avec Selenium Grid, suivez ces étapes générales. Ces instructions sont également applicables à Python et d'autres langages pris en charge par Selenium. 
+Notez que l'installation de Selenium Grid et du serveur n'est pas nécessaire pour les grilles Selenium cloud.
+
+Installez Java :
+Téléchargez et installez le Kit de développement Java (JDK) à partir du lien suivant : Télécharger et installer JDK.
+
+Installez un Environnement de Développement Intégré (EDI) :
+Choisissez un EDI de votre choix, tel qu'Eclipse ou IntelliJ. Configurez l'EDI en suivant les instructions disponibles dans ce blog sur la configuration d'Eclipse et IntelliJ.
+
+Eclipse IDE
+Téléchargez Selenium WebDriver et Java Client Driver :
+Téléchargez les bibliothèques Selenium WebDriver et le Java Client Driver correspondant. Configurez ces bibliothèques dans votre projet Eclipse. Vous pouvez obtenir ces bibliothèques depuis le site officiel de Selenium.
+
+Créez un Projet TestNG :
+Configurez un projet TestNG dans Eclipse en suivant les instructions disponibles dans ce blog sur la création d'un projet TestNG dans Eclipse.
+
+Création d'un Projet TestNG dans Eclipse
+Écrivez et Exécutez un Script de Test Selenium :
+Écrivez un script de test Selenium en utilisant les bibliothèques configurées dans votre projet TestNG. Exécutez le script pour vérifier que votre configuration fonctionne correctement.
+
+<ThumbUpAlert>
+Il s'agit de la facilité d'installation des prérequis nécessaires, tels que Java (JDK), un environnement de développement intégré (IDE) comme Eclipse ou IntelliJ, et le téléchargement des bibliothèques Selenium WebDriver.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+ Absence de template 
+</ThumbDownAlert>
+
+<ThumbDownAlert>
+ Selenium, étant principalement basé sur Java, peut imposer une dépendance à ce langage de programmation. Cela peut être perçu comme un inconvénient si l'équipe de développement préfère travailler avec d'autres langages.
+</ThumbDownAlert>
+
+<ThumbDownAlert>
+La configuration initiale de Selenium peut sembler complexe pour les débutants, en particulier pour ceux qui ne sont pas familiers avec l'écosystème Java ou d'autres langages de programmation pris en charge.
+La courbe d'apprentissage peut être un défi.
+</ThumbDownAlert>
+
+
+# Cypress ([Documentation](https://www.lambdatest.com/blog/playwright-vs-selenium-vs-cypress/))
+Dans Cypress, l’installation est super simple. L’avantage de Cypress est qu’il possède une structure de dossiers. Suivez simplement la structure des dossiers et commencez à développer les cas de test. À l'aide d'une structure de dossiers prédéfinie, vous pouvez développer le cadre de votre projet.
+
+Pour configurer Cypress, suivez les étapes ci-dessous :
+
+Pré-requis : Node doit déjà être installé.
+Générez package.json à l'aide de la commande npm init .
+La commande ````npm install cypress –save-dev```` installe la dernière version de Cypress. Au moment de la rédaction de ce blog, la dernière version de Cypress est la 12.2.0.
+Une fois Cypress installé, package.json ressemble à celui ci-joint.
+Une fois la configuration terminée, ouvrez Cypress, qui s'ouvrira avec tous les fichiers .spec par défaut.
+ouvrir avec tous les fichiers de spécifications par défaut
+
+Pour effectuer des tests de bout en bout à l'aide de Cypress, suivez le blog sur les tests de bout en bout de Cypress pour en savoir plus.
+
+<ThumbUpAlert>
+Cypress est facile à installer et à configurer. Il suffit d'installer Cypress et de l'exécuter. Il n'y a pas de configuration supplémentaire nécessaire.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+Demande plus de temps pour la configuration initiale.
+</ThumbDownAlert>
+
+# Playwright ([Documentation](https://www.lambdatest.com/blog/playwright-vs-selenium-vs-cypress/),(https://www.lambdatest.com/learning-hub/how-to-install-playwright) )
+
+Voici quelques prérequis de base pour Playwright :
+
+Assurez-vous que NodeJS est installé.
+Installez un éditeur de code. J'utiliserai Visual Studio Code .
+Il existe deux manières d'installer Playwright :
+
+Utilisation de l'extension VS Code.
+Utilisation de la commande init.
+
+- **Utilisation de l'extension VS Code
+Créez un dossier, par exemple Install_playwright.
+Ouvrez le dossier dans VS Code.
+Recherchez l’extension Playwright dans VS Code et installez-la.
+Une fois l'extension installée, vous verrez une icône Playwright dans la barre latérale de gauche.
+- **Utilisation de la commande init
+Créez un dossier
+Ouvrez le dossier dans VS Code.
+Exécuté à partir du répertoire racine du projet ````npm init playwright@latest````.
+Pendant que nous exécutons les commandes ci-dessus, Playwright commence l'installation.
+La commande vous guidera à travers le processus d'initialisation. Elle vous demandera de choisir les navigateurs que vous souhaitez prendre en charge (Chromium, Firefox, WebKit).
+Vous pouvez sélectionner les navigateurs en utilisant les touches fléchées et la barre d'espace pour cocher/décocher.
+Attendez que l'initialisation soit terminée :
+Une fois que vous avez fait vos sélections, la commande téléchargera les pilotes nécessaires pour les navigateurs choisis et configurera la structure de votre projet.
+
+
+<ThumbUpAlert>
+Playwright propose un processus d'installation relativement simple avec l'utilisation de commandes npm (Node Package Manager), ce qui facilite l'intégration dans un projet Node.js existant.
+</ThumbUpAlert>
+
+
+

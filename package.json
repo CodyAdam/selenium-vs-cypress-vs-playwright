@@ -1,5 +1,13 @@
 {
   "name": "monorepo",
   "private": true,
-  "workspaces": ["cypress", "playwright", "selenium", "visualize-web"]
+  "workspaces": [
+    "cypress",
+    "playwright",
+    "selenium",
+    "visualize-web"
+  ],
+  "dependencies": {
+    "yarn": "^1.22.21"
+  }
 }

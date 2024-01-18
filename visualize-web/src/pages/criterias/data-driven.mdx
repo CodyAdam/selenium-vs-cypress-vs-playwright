@@ -45,7 +45,7 @@ Nous utilisons https://conduit-realworld-example-app.fly.dev/#/login comme appli
 
 Cypress, supporte le Data Driven Testing (DDT). Voici comment il permet de mettre en œuvre cette méthode :
 
-1. **Utilisation de fichiers externes pour les données de test** : Cypress peut lire des données à partir de fichiers externes comme JSON, CSV, ou même des bases de données. Ces fichiers peuvent être utilisés pour alimenter les tests avec différents ensembles de données. Par exemple, vous pouvez stocker des données d'utilisateur dans un fichier JSON et utiliser ces données pour tester différentes situations de connexion.
+**Utilisation de fichiers externes pour les données de test** : Cypress peut lire des données à partir de fichiers externes comme JSON, CSV, ou même des bases de données. Ces fichiers peuvent être utilisés pour alimenter les tests avec différents ensembles de données. Par exemple, vous pouvez stocker des données d'utilisateur dans un fichier JSON et utiliser ces données pour tester différentes situations de connexion.
 
 Exemple:
 
@@ -83,7 +83,7 @@ Le fichier `users.json` contient les données des utilisateurs au format JSON :
 ```
 
 
-2. **Boucles et itérations** : Avec Cypress, vous pouvez itérer sur un ensemble de données en utilisant des boucles JavaScript standards comme `forEach` ou `for`. Chaque itération peut passer un nouvel ensemble de données à un test, permettant ainsi d'exécuter le même scénario de test avec différentes valeurs d'entrée.
+**Boucles et itérations** : Avec Cypress, vous pouvez itérer sur un ensemble de données en utilisant des boucles JavaScript standards comme `forEach` ou `for`. Chaque itération peut passer un nouvel ensemble de données à un test, permettant ainsi d'exécuter le même scénario de test avec différentes valeurs d'entrée.
 
 Exemple :
 
@@ -101,10 +101,6 @@ it("should be able to login with all users", () => {
 });
 ```
 
-3. **Commandes personnalisées** : Cypress permet de créer des commandes personnalisées qui peuvent être utilisées pour implémenter des routines de test répétitives avec différentes données. Ces commandes peuvent être configurées pour accepter des données en tant que paramètres et les utiliser dans les tests.
-
-4. **Intégration avec des outils de CI/CD** : Cypress s'intègre facilement avec les outils de CI/CD (Intégration Continue / Déploiement Continu) où les tests pilotés par les données peuvent être exécutés dans différents environnements et avec différents ensembles de données de manière automatisée.
-
 Pour mettre en œuvre le Data Driven Testing avec Cypress, vous devez structurer vos tests de manière à ce qu'ils puissent accepter des données de différentes sources et exécuter les assertions basées sur ces données. La documentation et les communautés en ligne de Cypress offrent des exemples et des guides sur la manière de le faire efficacement.
 
 <ThumbUpAlert>
@@ -121,7 +117,7 @@ Pour mettre en œuvre le Data Driven Testing avec Cypress, vous devez structurer
 
 ## Playwright
 
-Playwright, supporte le Data Driven Testing (DDT) par défaut. Cependant, Playwright a moins d'avis sur la manière de mettre en œuvre les tests basés sur les données. Il n'oblige pas de structure particulière comme Cypress avec les fichiers fixtures.
+Playwright, supporte le Data Driven Testing (DDT) par défaut. De plus, Playwright a moins d'avis sur la manière de mettre en œuvre les tests basés sur les données. Il n'oblige pas de structure particulière comme Cypress avec les fichiers fixtures. Il supporte tout ce que fait Cypress mais en plus flexible.
 
 Pour utiliser un fichier de données externe, il suffit de l'importer dans le fichier de test et de l'utiliser dans les tests directement.
 

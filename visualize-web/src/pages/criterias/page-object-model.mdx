@@ -51,6 +51,43 @@ it('should add new todo', () => {
     page.fillNewTodo('new todo');
 });
 ```
+
+# Playwright
+
+<ThumbDownAlert>
+    Comme pour Selenium, nécessité de passer l'objet `page` dans le constructeur de la classe qui représente la page.
+</ThumbDownAlert>
+
+```ts
+export default class TodoPage {
+    constructor(private page: Page) {}
+
+    async visit() {
+        await this.page.goto(URL);
+    }
+
+    async fillNewTodo (todoText: string) {
+        await this.page.fill('.new-todo', todoText);
+    }
+}
+```
+
+<ThumbUpAlert>
+    L'API est agréable à utiliser et permet de faire des tests lisibles (en restant légèrement moins satisfaisante que Cypress).
+</ThumbUpAlert>
+
+```ts
+test('should add new todo', async ({ page }) => {
+    const todoPage = new TodoPage(page);
+    await todoPage.visit();
+    await todoPage.fillNewTodo ('new todo');
+});
+```
+
+<ThumbDownAlert>
+    Parce que l'objet `page` est un paramètre de chaque test, il est nécessaire de créer une nouvelle instance de la classe qui représente la page pour chaque test.
+</ThumbDownAlert>
+
 # Selenium
 
 <ThumbDownAlert>
@@ -93,39 +130,3 @@ it("should add new todo", async () => {
     await todoPage.fillNewTodo ('new todo');
 });
 ```
-
-# Playwright
-
-<ThumbDownAlert>
-    Comme pour Selenium, nécessité de passer l'objet `page` dans le constructeur de la classe qui représente la page.
-</ThumbDownAlert>
-
-```ts
-export default class TodoPage {
-    constructor(private page: Page) {}
-
-    async visit() {
-        await this.page.goto(URL);
-    }
-
-    async fillNewTodo (todoText: string) {
-        await this.page.fill('.new-todo', todoText);
-    }
-}
-```
-
-<ThumbUpAlert>
-    L'API est agréable à utiliser et permet de faire des tests lisibles (en restant légèrement moins satisfaisante que Cypress).
-</ThumbUpAlert>
-
-```ts
-test('should add new todo', async ({ page }) => {
-    const todoPage = new TodoPage(page);
-    await todoPage.visit();
-    await todoPage.fillNewTodo ('new todo');
-});
-```
-
-<ThumbDownAlert>
-    Parce que l'objet `page` est un paramètre de chaque test, il est nécessaire de créer une nouvelle instance de la classe qui représente la page pour chaque test.
-</ThumbDownAlert>

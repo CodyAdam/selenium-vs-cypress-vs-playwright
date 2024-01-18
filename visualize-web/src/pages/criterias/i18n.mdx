@@ -11,6 +11,13 @@ import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
 
 # Définition
 
+La localisation et l'internationalisation (i18n) sont des aspects cruciaux dans les tests automatisés pour les applications multilingues.
+
+# Critères d'évaluation
+
+- [x] Facilité de Modification de la Langue du Navigateur
+- [x] Facilité de Modification de la Timezone du Navigateur
+
 # Scénario de test
 
 # [What is my Timezone](https://webbrowsertools.com/timezone/)
@@ -56,6 +63,24 @@ Cypress.on('test:before:run', () => {
 
 En remplaçant `<locale>` par la locale souhaitée (par exemple `fr-FR`).
 
+# Playwright
+
+<ThumbUpAlert>
+    Playwright permet de modifier la langue et la timezone du navigateur, très facilement, et pour tous les navigateurs.
+</ThumbUpAlert>
+
+Pour ce faire, il suffit de créer un nouveau contexte avec les options `locale` et `timezoneId` :
+
+```ts
+test('<...>', async ({ browser }) => {
+    const context = await browser.newContext({
+        timezoneId: 'Antarctica/Troll',
+        locale: 'fr-FR'
+    });
+    const page = await context.newPage();
+    // ...
+});
+```
 
 
 # Selenium
@@ -88,22 +113,3 @@ options.addArguments('--lang=fr');
 ```
 
 Cependant, nous n'avons pas réussi à faire fonctionner cette solution.
-
-# Playwright
-
-<ThumbUpAlert>
-    Playwright permet de modifier la langue et la timezone du navigateur, très facilement, et pour tous les navigateurs.
-</ThumbUpAlert>
-
-Pour ce faire, il suffit de créer un nouveau contexte avec les options `locale` et `timezoneId` :
-
-```ts
-test('<...>', async ({ browser }) => {
-    const context = await browser.newContext({
-        timezoneId: 'Antarctica/Troll',
-        locale: 'fr-FR'
-    });
-    const page = await context.newPage();
-    // ...
-});
-```

@@ -1,0 +1,97 @@
+---
+layout: ../../layouts/Criteria.astro
+title: Runners
+selenium: 1
+cypress: 4
+playwright: 5
+---
+
+import ThumbUpAlert from '../../components/ThumbUpAlert.astro'
+import ThumbDownAlert from '../../components/ThumbDownAlert.astro'
+import ThumbWarningAlert from '../../components/ThumbWarningAlert.astro'
+
+
+# Définition
+Le runner est un utilitaire permettant de lancer et exécuter des cas de test. Une fois les scénarios de test exécutés, vous avez la possibilité d'afficher et d'exporter les résultats de l'exécution des tests.
+# Critères d'Évaluation
+- **Polyvalence des Navigateurs** : Évalue la capacité du runner à prendre en charge différents navigateurs web.
+- **Compatibilité avec les Navigateurs Majeurs** : Considère la prise en charge des principaux navigateurs tels que Chrome, Firefox, Safari, etc.
+- **Installation et Onboarding** : Évalue la facilité d'installation et d'intégration initiale du runner dans un projet.
+- **Configuration pour les Navigateurs** : Évalue la simplicité et l'efficacité de la configuration du runner pour travailler avec différents navigateurs.
+- **Structure des Tests** : Évalue la facilité de création et de gestion de la structure des tests.
+- **Sélecteurs et Localisateurs** : Considère les options offertes par le runner pour la sélection d'éléments dans le DOM.
+- **Outils de Débogage Intégrés** : Évalue la présence d'outils de débogage intégrés pour faciliter le processus de développement.
+- **Qualité des Rapports de Test** : Considère la qualité des rapports générés par le runner pour faciliter l'analyse des résultats
+- **Lisibilité de la Syntaxe** : Évalue la clarté et la simplicité des expressions d'assertion dans le code.
+- **Expressivité des Assertions** : Considère la capacité des assertions à exprimer clairement l'intention du test.
+- **Nombre et Types d'Assertions** : Évalue la variété d'assertions disponibles pour tester différents aspects d'une application.
+- **Assertions Personnalisées** : Considère la possibilité de créer des assertions personnalisées pour des besoins spécifiques.
+- **Compatibilité avec les Frameworks de Test** : Évalue la facilité d'intégration des assertions avec des frameworks de test populaires (Jest, Mocha, etc.).
+- **Interopérabilité avec d'Autres Bibliothèques** : Considère la capacité des assertions à fonctionner harmonieusement avec d'autres bibliothèques ou outils de test.
+
+# Selenium([Documentation](https://www.lambdatest.com/blog/playwright-vs-selenium-vs-cypress/))
+
+Le Selenium Runner englobe une diversité d'exécuteurs pour l'automatisation de scripts Selenium. Parmi ceux-ci, le Selenium WebDriver demeure l'exécuteur principal, permettant l'automatisation des interactions avec les navigateurs web. 
+Selenium Grid facilite l'exécution de scripts sur des machines distantes ou dans le cloud, idéal pour des tests en parallèle sur diverses configurations. Les frameworks de test populaires, tels que TestNG et JUnit, sont souvent intégrés avec Selenium pour structurer les tests et prendre en charge l'exécution parallèle. 
+Des outils d'intégration continue tels que Jenkins automatisent le processus de création, de test et de déploiement, tandis que Maven gère les dépendances et le déploiement. Les outils de test cloud permettent l'exécution sur une variété de plates-formes. L'utilisation combinée de ces exécuteurs offre une flexibilité et une adaptabilité cruciales pour répondre aux divers besoins d'automatisation des tests dans des environnements variés.
+Selenium lui-même ne fournit pas de test runner spécifique intégré en tant que composant natif de l'outil. Un test runner est un composant ou un framework qui coordonne l'exécution des tests automatisés, permettant de définir, organiser et exécuter des suites de tests.
+Dans le cas de Selenium, bien qu'il offre des fonctionnalités d'automatisation pour interagir avec les navigateurs web, il ne propose pas de test runner spécifique à son code source. Cependant, Selenium est conçu pour s'intégrer facilement avec différents test runners populaires tels que TestNG, JUnit, NUnit, Mocha, Jest, Jasmine, et d'autres. Ces frameworks de test fournissent la structure nécessaire pour organiser les cas de test, définir des suites de tests, et effectuer l'exécution des tests de manière organisée.
+Ainsi, bien que Selenium ne dispose pas de son propre test runner intégré, il est souvent utilisé en tandem avec ces frameworks de test externes pour offrir une solution complète d'automatisation des tests. Cela permet une flexibilité accrue pour les utilisateurs, qui peuvent choisir le test runner qui correspond le mieux à leurs besoins et à leur environnement de développement.
+<ThumbUpAlert>
+Selenium offre divers mécanismes de localisation d'éléments dans le DOM, tels que les sélecteurs CSS, les XPath, les identifiants d'éléments, etc., ce qui donne aux testeurs une flexibilité considérable pour cibler et interagir avec des éléments spécifiques.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+ La configuration de Selenium WebDriver peut être complexe, notamment lors de la gestion des pilotes pour différents navigateurs. Cette complexité peut rendre l'initialisation du framework plus difficile par rapport à d'autres runners plus simples à configurer.
+</ThumbDownAlert>
+
+<ThumbDownAlert>
+L'exécution des tests avec Selenium peut parfois être plus lente, surtout lorsqu'il s'agit d'une grande suite de tests. Des délais peuvent se produire, en particulier lors de l'interaction avec des éléments dynamiques de la page.
+</ThumbDownAlert>
+
+<ThumbDownAlert>
+La syntaxe d'assertion de Selenium peut parfois être verbeuse, nécessitant plusieurs lignes de code pour exprimer des validations simples. Cela peut rendre le code de test moins lisible et plus sujet aux erreurs humaines.
+</ThumbDownAlert>
+
+# Cypress ([Documentation](https://www.lambdatest.com/blog/playwright-vs-selenium-vs-cypress/))
+
+Cypress offre un programme d'exécution de tests unique, le Cypress Runner, qui offre une visibilité exceptionnelle sur le déroulement des tests. Dans le Cypress Runner, non seulement vous pouvez suivre en temps réel l'exécution des commandes, mais vous avez également la possibilité de visualiser l'application testée avec les données en temps réel. Cette fonctionnalité distinctive permet aux utilisateurs de détecter les changements dans l'interface utilisateur de manière visuelle en survolant simplement le journal des commandes. 
+Cypress dispose d'un test runner intégré. Cela signifie que Cypress inclut son propre programme d'exécution de tests qui facilite le processus de création, d'organisation et d'exécution des tests automatisés. Le test runner de Cypress offre une interface visuelle puissante appelée Cypress Runner, permettant aux utilisateurs de suivre le déroulement des tests en temps réel, de visualiser les commandes en cours d'exécution et de repérer les changements dans l'interface utilisateur.
+Ainsi, Cypress fournit une approche transparente et puissante pour l'observation des tests, offrant une visibilité accrue sur les interactions et les résultats à chaque étape du processus d'automatisation des tests.
+<ThumbUpAlert>
+Cypress offre une syntaxe d'assertion simple et concise, ce qui facilite la création de tests et la lecture des résultats.
+</ThumbUpAlert>
+
+<ThumbUpAlert>
+Cypress offre une prise en charge intégrée des tests parallèles, ce qui permet d'exécuter des tests sur plusieurs navigateurs en même temps.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+Cypress est limité dans sa prise en charge des navigateurs, se concentrant principalement sur Chrome et Chromium. Si votre projet nécessite une couverture étendue des navigateurs, cela peut être considéré comme une limitation.
+</ThumbDownAlert>
+
+# Playwright ([Documentation](https://www.lambdatest.com/blog/playwright-vs-selenium-vs-cypress/))
+
+Playwright s'exécute avec différents exécuteurs de Tests. Il s'adapte facilement à divers exécuteurs de tests tels que Playwright Test, Jest, Jasmine, AVA, Mocha, et Vitest.
+L'utilisation directe de Playwright dans ces exécuteurs est souvent recommandée pour sa simplicité et son efficacité.
+Playwright permet l'exécution de tests dans plusieurs navigateurs en utilisant une variable d'environnement.
+La possibilité d'exécuter des tests en mode sans tête est la configuration par défaut, ce qui est avantageux pour les scénarios d'automatisation sans interaction visuelle.
+
+La commande de base pour exécuter tous les tests est ```` npx playwright test ````.
+Pour exécuter un seul scénario de test, la commande est ```` npx playwright test fileName.spec.js ````.
+Pour exécuter un ensemble de cas de test, on utilise npx playwright test tests/page/home-page/.
+L'option --headed permet d'exécuter les tests en mode dirigé, affichant l'interface graphique du navigateur.
+Mode Débogage avec Playwright Inspector** :
+
+Playwright offre un outil intégré appelé Playwright Inspector pour le mode débogage.
+Le Playwright Inspector permet de parcourir les appels de l'API Playwright, consulter les journaux de débogage, explorer les sélecteurs, et trouver des localisateurs en survolant les éléments lors de l'inspection.
+
+<ThumbUpAlert>
+La Capacité intégrée de capture d'écran et de capture vidéo pendant l'exécution des tests.
+</ThumbUpAlert>
+
+<ThumbDownAlert>
+   Playwright peut entraîner une augmentation de la consommation des ressources système dans certains scénarios.
+</ThumbDownAlert>
+
+
